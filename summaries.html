@@ -9,7 +9,7 @@
     <script src="https://web.chemdoodle.com/downloads/ChemDoodleWeb.js"></script> 
     
     <style>
-        /* קצת CSS ספציפי לעמוד הסיכומים */
+        /* CSS ספציפי לעמוד הסיכומים */
         .summary-section {
             background-color: #ecf0f1;
             padding: 20px;
@@ -21,6 +21,7 @@
 
         .molecule-display {
             width: 100%; 
+            max-width: 600px; /* הגבלה לגודל סביר */
             height: 350px; 
             margin: 20px auto;
             border: 2px solid #3498db;
@@ -49,68 +50,61 @@
 
 <div class="game-container">
     <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
-    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח, ולראות כיצד המבנה משפיע על קוטביות המולקולה והקשרים הבין-מולקולריים.</p>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח, ולראות כיצד המבנה משפיע על קוטביות המולקולה והקשרים הבין-מולקולריים. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
 
     <div class="summary-section">
-        <h3>1. מים ($H_2O$): מבנה זוויתי וקשרי מימן</h3>
-        [cite_start]<p>למולקולת המים מבנה זוויתי (כ-$104.5^{\circ}$), וזה בגלל שיש לה שני זוגות אלקטרונים לא קושרים על אטום החמצן, הדוחפים את קשרי המימן. [cite: 5960, 6042]</p>
+        <h3>1. מים ($H_2O$): מבנה זוויתי וקוטביות</h3>
+        <p>למולקולת המים מבנה זוויתי (כ-$104.5^{\circ}$), וזה בגלל שיש לה שני זוגות אלקטרונים לא קושרים על אטום החמצן, הדוחפים את הקשרים. המבנה הא-סימטרי הזה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
         <div id="canvas_water" class="molecule-display"></div>
     </div>
     
     <div class="summary-section">
         <h3>2. מתאן ($CH_4$): מבנה טטראדרי ואי-קוטביות</h3>
-        <p>למולקולת המתאן מבנה טטראדרי סימטרי (כ-$109.5^{\circ}$), ואין לה זוגות אלקטרונים לא קושרים על הפחמן המרכזי. [cite_start]בגלל הסימטריה, הקשרים הקוטביים מתבטלים והמולקולה כולה אינה קוטבית. [cite: 5937, 6017, 6031]</p>
+        <p>למולקולת המתאן מבנה טטראדרי סימטרי (כ-$109.5^{\circ}$). בגלל הסימטריה המושלמת סביב אטום הפחמן המרכזי, מומנטי הדיפול של קשרי C-H מתבטלים והמולקולה כולה אינה קוטבית (פועלים רק כוחות לונדון).</p>
         <div id="canvas_methane" class="molecule-display"></div>
     </div>
 
     <div class="summary-section">
-        <h3>3. פחמן דו-חמצני ($CO_2$): מבנה קווי ואי-קוטבי</h3>
-        <p>למולקולה מבנה קווי ($180^{\circ}$). [cite_start]למרות שיש קשרים קוטביים (C=O), המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית. [cite: 5950, 5956]</p>
-        <div id="canvas_co2" class="molecule-display"></div>
+        <h3>3. חנקן ($N_2$): קשר משולש ($C \equiv C$) וסדר קשר גבוה</h3>
+        <p>מולקולת החנקן מורכבת מקשר קוולנטי משולש (סדר קשר 3), שהוא הקשר הקוולנטי החזק ביותר שקיים בכימיה. זה הופך את $N_2$ למולקולה אינרטית (לא פעילה כימית) מאוד. המבנה הוא קווי (ליניארי).</p>
+        <div id="canvas_nitrogen" class="molecule-display"></div>
     </div>
 
 </div>
 
 <script>
-    // --- JavaScript להצגת מולקולות ---
+    // --- JavaScript להצגת מולקולות באמצעות ChemDoodle ---
     
     // הגדרת מודל המים
     let water = new ChemDoodle.ViewerCanvas('canvas_water', 400, 350);
     water.specs.backgroundColor = 'transparent'; 
-    water.specs.bonds_thickness_2D = 2.0;
-    water.specs.set3DRepresentation('Stick');
-    water.specs.stylesToDraw = 45; // Sticks
+    water.specs.set3DRepresentation('Ball and Stick');
+    water.specs.stylesToDraw = 32; 
     water.specs.projection = 'perspective';
-    
-    // טעינת מולקולת מים (MOL קצר)
-    let waterMol = ChemDoodle.readMOL('Molecule Name\n  ChemDoodle01081512402D\n\n  3 2 0 0 0 0 0 0 0 0 999 V2000\n    1.0000    0.0000    0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0\n    1.0000    0.0000    1.0000 H 0 0 0 0 0 0 0 0 0 0 0 0\n    0.2929   -0.7071    0.0000 H 0 0 0 0 0 0 0 0 0 0 0 0\n  1 2 1 0 0 0 0\n  1 3 1 0 0 0 0\nM  END\n');
-    water.loadMolecule(waterMol);
+    // נשתמש בפורמט ChemDoodle JSON (CDM) שהוא בדרך כלל אמין יותר מ-MOL
+    let waterCDM = {"a": [{"l": "O", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.757, "x": 0.0, "z": 0.587}, {"l": "H", "y": -0.757, "x": 0.0, "z": 0.587}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}]};
+    water.loadContent(waterCDM.a, waterCDM.b);
     
     // הגדרת מודל המתאן
     let methane = new ChemDoodle.ViewerCanvas('canvas_methane', 400, 350);
     methane.specs.backgroundColor = 'transparent';
-    methane.specs.bonds_thickness_2D = 2.0;
     methane.specs.set3DRepresentation('Ball and Stick'); 
-    methane.specs.stylesToDraw = 32; // Ball and Stick
+    methane.specs.stylesToDraw = 32; 
     methane.specs.projection = 'perspective';
-    
-    // טעינת מולקולת מתאן (MOL קצר)
-    let methaneMol = ChemDoodle.readMOL('Molecule Name\n  ChemDoodle01081512402D\n\n  5 4 0 0 0 0 0 0 0 0 999 V2000\n    0.0000    0.0000    0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0\n    1.0000    0.0000    0.0000 H 0 0 0 0 0 0 0 0 0 0 0 0\n   -0.3333    0.9428    0.0000 H 0 0 0 0 0 0 0 0 0 0 0 0\n   -0.3333   -0.4714    0.8165 H 0 0 0 0 0 0 0 0 0 0 0 0\n   -0.3333   -0.4714   -0.8165 H 0 0 0 0 0 0 0 0 0 0 0 0\n  1 2 1 0 0 0 0\n  1 3 1 0 0 0 0\n  1 4 1 0 0 0 0\n  1 5 1 0 0 0 0\nM  END\n');
-    methane.loadMolecule(methaneMol);
+    let methaneCDM = {"a": [{"l": "C", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": 1.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": -0.5, "z": 0.866}, {"l": "H", "y": 0.866, "x": -0.5, "z": -0.5}, {"l": "H", "y": -0.866, "x": -0.5, "z": -0.5}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}, {"b": 1, "e": 4, "o": 1}, {"b": 1, "e": 5, "o": 1}]};
+    methane.loadContent(methaneCDM.a, methaneCDM.b);
 
-    // הגדרת מודל CO2
-    let co2 = new ChemDoodle.ViewerCanvas('canvas_co2', 400, 350);
-    co2.specs.backgroundColor = 'transparent';
-    co2.specs.bonds_thickness_2D = 2.0;
-    co2.specs.set3DRepresentation('Stick');
-    co2.specs.stylesToDraw = 45; // Sticks
-    co2.specs.projection = 'perspective';
+    // הגדרת מודל N2 (חנקן)
+    let nitrogen = new ChemDoodle.ViewerCanvas('canvas_nitrogen', 400, 350);
+    nitrogen.specs.backgroundColor = 'transparent';
+    nitrogen.specs.set3DRepresentation('Ball and Stick');
+    nitrogen.specs.stylesToDraw = 32;
+    nitrogen.specs.projection = 'perspective';
+    let nitrogenCDM = {"a": [{"l": "N", "y": 0.0, "x": -0.5, "z": 0.0}, {"l": "N", "y": 0.0, "x": 0.5, "z": 0.0}], "b": [{"b": 1, "e": 2, "o": 3}]}; // Bond order 3 (triple bond)
+    nitrogen.loadContent(nitrogenCDM.a, nitrogenCDM.b);
 
-    // טעינת מולקולת CO2 (MOL קצר)
-    let co2Mol = ChemDoodle.readMOL('Molecule Name\n  ChemDoodle01081512402D\n\n  3 2 0 0 0 0 0 0 0 0 999 V2000\n    0.0000    0.0000    0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0\n    1.1500    0.0000    0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0\n   -1.1500    0.0000    0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0\n  1 2 2 0 0 0 0\n  1 3 2 0 0 0 0\nM  END\n');
-    co2.loadMolecule(co2Mol);
-
-
+    // מריץ את כל הציורים מחדש לאחר שהדף נטען
+    ChemDoodle.repaintAll();
 </script>
 </body>
 </html>
