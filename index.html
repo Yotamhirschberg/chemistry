@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול כימיה - מכינת בן גוריון</title>
+    <style>
+        /* --- חלק העיצוב (CSS) --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .game-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #58cc02; /* הצבע הירוק של דואלינגו */
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .question-box {
+            font-size: 20px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 0 #e5e5e5;
+        }
+
+        .option-btn:hover {
+            background-color: #f7f7f7;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* סגנונות לפידבק תשובה */
+        .correct {
+            background-color: #d7ffb8 !important;
+            border-color: #58cc02 !important;
+            color: #58cc02;
+        }
+
+        .wrong {
+            background-color: #ffdfe0 !important;
+            border-color: #ff4b4b !important;
+            color: #ff4b4b;
+        }
+
+        #next-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background-color: #58cc02;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none; /* מוסתר עד שעונים */
+        }
+        
+        #next-btn:hover {
+            background-color: #46a302;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+    
+    <h1>תרגול כימיה</h1>
+    <div id="question-text" class="question-box">השאלה תופיע כאן...</div>
+    
+    <div class="options-grid" id="options-container">
+        </div>
+
+    <button id="next-btn" onclick="nextQuestion()">המשך לשאלה הבאה</button>
+    <p id="score-display" style="margin-top: 15px; color: gray;"></p>
+</div>
+
+<script>
+    /* --- חלק הלוגיקה (JavaScript) --- */
+    
+    // 1. כאן אתה מכניס את השאלות שלך!
+    // המבנה הוא: שאלה, מערך של תשובות, והמספר של התשובה הנכונה (0 זה הראשונה, 1 זה השנייה וכו')
+    const questions = [
+        {
+            question: "מהו המספר האטומי של פחמן (C)?",
+            answers: ["6", "12", "14", "8"],
+            correct: 0 
+        },
+        {
+            question: "איזה קשר כימי נוצר בין יוני נתרן (Na) ליוני כלור (Cl)?",
+            answers: ["קשר קוולנטי", "קשר יוני", "קשר מתכתי", "קשר מימני"],
+            correct: 1
+        },
+        {
+            question: "מהי הנוסחה הכימית של מים?",
+            answers: ["HO2", "H2O", "H2O2", "OH"],
+            correct: 1
+        },
+        {
+            question: "איזה חלקיק נמצא בגרעין האטום והוא בעל מטען חיובי?",
+            answers: ["אלקטרון", "ניוטרון", "פרוטון", "פוטון"],
+            correct: 2
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    // פונקציה שטוענת את השאלה הנוכחית
+    function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        document.getElementById('question-text').innerText = questionData.question;
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = ''; // ניקוי כפתורים ישנים
+
+        // יצירת כפתורים לתשובות
+        questionData.answers.forEach((answer, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = answer;
+            btn.classList.add('option-btn');
+            btn.onclick = () => checkAnswer(index, btn);
+            optionsContainer.appendChild(btn);
+        });
+
+        // עדכון סרגל התקדמות
+        const progressPercent = (currentQuestionIndex / questions.length) * 100;
+        document.getElementById('progress').style.width = progressPercent + "%";
+        
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    // פונקציה לבדיקת התשובה
+    function checkAnswer(selectedIndex, btnElement) {
+        const correctIndex = questions[currentQuestionIndex].correct;
+        const allButtons = document.querySelectorAll('.option-btn');
+
+        // נטרול לחיצה נוספת
+        allButtons.forEach(btn => btn.onclick = null);
+
+        if (selectedIndex === correctIndex) {
+            btnElement.classList.add('correct');
+            score++;
+        } else {
+            btnElement.classList.add('wrong');
+            // סימון התשובה הנכונה בירוק כדי שהתלמיד ילמד
+            allButtons[correctIndex].classList.add('correct');
+        }
+
+        document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    // מעבר לשאלה הבאה
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            // סוף המשחק
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        document.querySelector('.game-container').innerHTML = `
+            <h2>כל הכבוד! סיימת את התרגול.</h2>
+            <p>הציון שלך: ${score} מתוך ${questions.length}</p>
+            <button onclick="location.reload()" id="next-btn" style="display:inline-block">נסה שוב</button>
+        `;
+    }
+
+    // התחלת המשחק בטעינת הדף
+    loadQuestion();
+
+</script>
+
+</body>
+</html>
