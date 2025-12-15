@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>תרגול כימיה אדפטיבי - מכינת בן גוריון</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://web.chemdoodle.com/downloads/ChemDoodleWeb.js"></script> 
 </head>
 <body>
 
 <div class="header">
     <h1>אתר תרגול כימיה 👨‍🔬 - מכינת ב.ג.</h1>
 </div>
+
 <div class="nav-bar">
     <a href="index.html" class="nav-btn active-tab">תרגול אדפטיבי (שאלות)</a>
     <a href="summaries.html" class="nav-btn">סיכומים ודגמים ויזואליים</a>
 </div>
-    
+
 <div class="game-container">
     <div class="stats-bar">
         <span id="level-display" class="level-badge">רמה 1 (מתחיל)</span>
@@ -39,40 +42,122 @@
 </div>
 
 <script>
-    // --- JavaScript Logic (Simplified and cleaner) ---
+    // --- JavaScript Logic (Question Bank is EMBEDDED here) ---
 
+    // 1. בנק השאלות המלא - מוטמע ישירות בקובץ ה-HTML
+    const questionBank = [
+        // --- רמה 1: יסודות ומושגים בסיסיים (מכינה) ---
+        {
+            "id": 101,
+            "topic": "תכונות מחזוריות",
+            "difficulty": 1,
+            "question": "כאשר אטום מאבד אלקטרון והופך לקטיון, כיצד משתנה הרדיוס היוני שלו?",
+            "answers": ["הרדיוס גדל", "הרדיוס נשאר זהה", "הרדיוס קטן, כי הליבה חשופה ומשיכת הגרעין מתחזקת", "הרדיוס גדל, בגלל דחיית האלקטרונים"],
+            "correct": 2
+        },
+        {
+            "id": 102,
+            "topic": "קשרים וסריגים",
+            "difficulty": 1,
+            "question": "מהו סוג המבנה של חומר שאינו מוליך חשמל כנוזל או כמוצק, ובעל טמפרטורת היתוך נמוכה?",
+            "answers": ["סריג יוני", "סריג מתכתי", "סריג אטומרי", "חומר מולקולרי"],
+            "correct": 3
+        },
+        {
+            "id": 103,
+            "topic": "קשרים בין-מולקולריים",
+            "difficulty": 1,
+            "question": "איזו אינטראקציה בין-מולקולרית קיימת **בין כל** המולקולות האפשריות של חומר מולקולרי?",
+            "answers": ["קשרי מימן", "אינטראקציות דיפול-דיפול", "כוחות לונדון (דו-קוטב רגעי)", "קשר קוולנטי"],
+            "correct": 2
+        },
+        {
+            "id": 104,
+            "topic": "קשרים וסריגים",
+            "difficulty": 1,
+            "question": "איזה תנאי **חובה** נדרש כדי שחומר יוליך חשמל?",
+            "answers": ["החלקיקים בעלי מטען ומוצקים", "החלקיקים אינם טעונים אך ניידים", "החלקיקים בעלי מטען וניידים", "החומר קוולנטי"],
+            "correct": 2
+        },
+        {
+            "id": 105,
+            "topic": "קשרים בין-מולקולריים",
+            "difficulty": 1,
+            "question": "מהי הקבוצה הפונקציונלית המופיעה בכוהל (Alcohol)?",
+            "answers": ["קבוצת אסטר (R-C(O)-OR')", "קבוצת אמין (R-N-H)", "קבוצת קרבוקסיל (R-C(O)OH)", "קבוצת הידרוקסיל (R-OH)"],
+            "correct": 3
+        },
+        // --- רמה 2: יישום כללים ---
+        {
+            "id": 201,
+            "topic": "תכונות מחזוריות",
+            "difficulty": 2,
+            "question": "נתונים היסודות הבאים: $C, N, O, F$. סדר את היסודות לפי רדיוס אטומי עולה (מהקטן לגדול).",
+            "answers": ["$F < O < N < C$", "$C < N < O < F$", "$O < F < N < C$", "$N < O < C < F$"],
+            "correct": 0
+        },
+        {
+            "id": 202,
+            "topic": "קשרים וסריגים",
+            "difficulty": 2,
+            "question": "איזו מולקולה מבין הבאות היא קוטבית בעלת גיאומטריה זוויתית?",
+            "answers": ["$CO_2$ (קווי)", "$BeCl_2$ (קווי)", "$BF_3$ (משולש מישורי)", "$H_2S$ (זוויתי)"],
+            "correct": 3
+        },
+        {
+            "id": 203,
+            "topic": "קשרים וסריגים",
+            "difficulty": 2,
+            "question": "כמה זוגות אלקטרונים לא-קושרים קיימים במולקולת $NH_3$ (אמוניה) סביב האטום המרכזי?",
+            "answers": ["0", "1", "2", "3"],
+            "correct": 1
+        },
+        {
+            "id": 204,
+            "topic": "קשרים בין-מולקולריים",
+            "difficulty": 2,
+            "question": "מדוע אתנול ($CH_3CH_2OH$) מתמוסס במים באופן טוב מאוד?",
+            "answers": ["בגלל שהוא מולקולה לא קוטבית", "כי החלק הפחמימני שלו גדול", "בגלל יכולתו ליצור קשרי מימן עם מולקולות המים", "רק בגלל כוחות לונדון"],
+            "correct": 2
+        },
+        // --- רמה 3: שאלות אתגר ---
+        {
+            "id": 301,
+            "topic": "תכונות מחזוריות",
+            "difficulty": 3,
+            "question": "מדוע אנרגיית היינון הראשונה של חמצן $(O)$ נמוכה מזו של חנקן $(N)$?",
+            "answers": ["חמצן רדיוס גדול יותר", "בגלל דחיית אלקטרונים באורביטל $p$ המאוכלס כפול של חמצן", "חנקן רדיוס קטן יותר", "החמצן הוא מתכת"],
+            "correct": 1
+        },
+        {
+            "id": 302,
+            "topic": "קשרים וסריגים",
+            "difficulty": 3,
+            "question": "נתונים החומרים: $LiF, MgO, NaF$. למי מהם צפויה אנרגיית הסריג הגבוהה ביותר (בערך מוחלט)?",
+            "answers": ["$LiF$ (היונים הכי קטנים)", "$NaF$ (היונים יוניים ביותר)", "$MgO$ (מטענים +2/-2, ויונים קטנים יחסית)", "$CaO$ (סידן גדול ממגנזיום)"],
+            "correct": 2
+        }
+    ];
+
+    // --- קוד המערכת האדפטיבית (ללא שינוי, השתמשנו בעיצוב מודרני כבר) ---
+    
     const MASTERY_GOAL = 10;
     let currentLevel = 1;
     let userXP = 0;
     let masteryPoints = 0;
     let askedQuestionIds = [];
-    let questionBank = [];
     let currentQuestion = {};
 
-    // טעינת בנק השאלות מקובץ JSON
-    async function loadQuestionBank() {
-        try {
-            const response = await fetch('questions.json');
-            questionBank = await response.json();
-            loadQuestion();
-        } catch (error) {
-            document.getElementById('question-text').innerText = 'שגיאה בטעינת השאלות. ודא שקובץ questions.json קיים ומדויק.';
-            console.error('Error loading questions:', error);
-        }
-    }
-
     function getQuestionByLevel(level) {
-        // מנסה למצוא שאלות ברמה הנוכחית שלא נשאלו עדיין
         let availableQuestions = questionBank.filter(q => 
             q.difficulty === level && !askedQuestionIds.includes(q.id)
         );
         
-        // אם נגמרו השאלות, מאפסים את ההיסטוריה ומשתמשים בכל השאלות ברמה
         if (availableQuestions.length === 0) {
             askedQuestionIds = [];
             availableQuestions = questionBank.filter(q => q.difficulty === level);
             if (availableQuestions.length === 0) {
-                 return null; // אין שאלות זמינות
+                 return null;
             }
         }
         
@@ -121,7 +206,7 @@
 
         if (index === currentQuestion.correct) {
             btn.classList.add('correct');
-            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-correct'>תשובה נכונה!</span>";
+            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-correct'>תשובה נכונה! 👍</span>";
             
             masteryPoints++;
             userXP += currentLevel; 
@@ -139,7 +224,7 @@
         } else {
             btn.classList.add('wrong');
             document.querySelectorAll('.option-btn')[currentQuestion.correct].classList.add('correct');
-            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-wrong'>טעות. נתרגל שוב כדי לבסס את ההבנה 🧐</span>";
+            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-wrong'>טעות, נתרגל שוב כדי לבסס את ההבנה 🧐</span>";
 
             masteryPoints = Math.max(0, masteryPoints - 2);
             
@@ -176,7 +261,7 @@
         `;
     }
 
-    loadQuestionBank();
+    loadQuestion(); // מתחילים ישירות, אין צורך ב-fetch
 
 </script>
 
