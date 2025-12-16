@@ -149,18 +149,27 @@
     // פונקציה כללית לטעינת קובץ PDB
     function loadMoleculeFile(elementId, filename) {
         if (typeof $3Dmol === 'undefined' || typeof $ === 'undefined') {
-            // טיפול בשגיאה אם הסקריפטים לא נטענו - יציג ריבוע לבן ריק במקום הודעה
-            console.error("3Dmol or JQuery not loaded. Cannot display 3D model.");
+            console.error("3Dmol or JQuery not loaded.");
             return; 
         }
 
         // טוען את נתוני המולקולה באמצעות JQuery (יעיל ל-GitHub Pages)
         $.get(filename, function(data) {
             let element = document.getElementById(elementId);
+            
+            // --- תיקון: הגדרת Viewer עם רגישות נמוכה יותר לזום ---
             let viewer = $3Dmol.createViewer(element, { 
                 backgroundColor: 'white', 
-                defaultcolors: $3Dmol.rasmolColors
+                defaultcolors: $3Dmol.rasmolColors,
+                // הגדרות שליטה מותאמות אישית: מוריד את רגישות הזום
+                mouse: {
+                    zoom: {
+                        type: $3Dmol.mousemode.ZOOM,
+                        sensitivity: 0.1 // הופך את הגלגול להרבה פחות רגיש
+                    }
+                }
             });
+            // --------------------------------------------------------
             
             // מוסיף את הנתונים שנטענו
             viewer.addModel(data, "pdb");
@@ -187,8 +196,8 @@
         loadMoleculeFile('canvas_methane', 'methane.pdb');
         loadMoleculeFile('canvas_ammonia', 'ammonia.pdb');
         loadMoleculeFile('canvas_co2', 'co2.pdb');
-        loadMoleculeFile('canvas_hcn', 'hcn.pdb');
-        loadMoleculeFile('canvas_bf3', 'bf3.pdb');
+        loadMoleculeFile('canvas_hcn', 'hcn.pdb'); 
+        loadMoleculeFile('canvas_bf3', 'bf3.pdb'); 
     }
     
     window.onload = init3DmolViewer;
