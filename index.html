@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>תרגול כימיה אדפטיבי - מכינת בן גוריון</title>
-    <link rel="stylesheet" href="style.css">
-    </head>
+    <link rel="stylesheet" href="./style.css"> 
+</head>
 <body>
 
 <div class="header">
@@ -18,9 +18,7 @@
 </div>
 
 <div class="game-container">
-    <div id="loading-message" style="font-size: 1.5em; color: #3498db;">טוען נתונים...</div>
-    
-    <div id="quiz-content" style="display:none;">
+    <div id="quiz-content">
         <div class="stats-bar">
             <span id="level-display" class="level-badge">רמה 1 (מתחיל)</span>
             <span>נקודות כלליות: <span id="xp-display">0</span></span>
@@ -44,28 +42,47 @@
 </div>
 
 <script>
-    // --- JavaScript Logic (Question Bank is EMBEDDED) ---
+    // --- JavaScript Logic (Question Bank is EMBEDDED here, with 30 Questions) ---
 
-    // 1. בנק השאלות המלא
     const questionBank = [
-        // --- רמה 1: יסודות ומושגים בסיסיים ---
-        { "id": 101, "topic": "תכונות מחזוריות", "difficulty": 1, "question": "כאשר אטום מאבד אלקטרון והופך לקטיון, כיצד משתנה הרדיוס היוני שלו?", "answers": ["הרדיוס גדל", "הרדיוס נשאר זהה", "הרדיוס קטן, כי הליבה חשופה ומשיכת הגרעין מתחזקת", "הרדיוס גדל, בגלל דחיית האלקטרונים"], "correct": 2 },
+        // --- רמה 1: בסיס, הגדרות ומושגים (מצגות 3.1, 3.2, 3.5) ---
+        { "id": 101, "topic": "תכונות מחזוריות", "difficulty": 1, "question": "כאשר אטום מאבד אלקטרון והופך לקטיון, כיצד משתנה הרדיוס היוני שלו?", "answers": ["הרדיוס גדל משמעותית", "הרדיוס נשאר זהה", "הרדיוס קטן, כי הליבה חשופה ומשיכת הגרעין מתחזקת", "הרדיוס גדל, בגלל דחיית האלקטרונים"], "correct": 2 },
         { "id": 102, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מהו סוג המבנה של חומר שאינו מוליך חשמל כנוזל או כמוצק, ובעל טמפרטורת היתוך נמוכה?", "answers": ["סריג יוני", "סריג מתכתי", "סריג אטומרי", "חומר מולקולרי"], "correct": 3 },
         { "id": 103, "topic": "קשרים בין-מולקולריים", "difficulty": 1, "question": "איזו אינטראקציה בין-מולקולרית קיימת **בין כל** המולקולות האפשריות של חומר מולקולרי?", "answers": ["קשרי מימן", "אינטראקציות דיפול-דיפול", "כוחות לונדון (דו-קוטב רגעי)", "קשר קוולנטי"], "correct": 2 },
-        { "id": 104, "topic": "קשרים וסריגים", "difficulty": 1, "question": "איזה תנאי **חובה** נדרש כדי שחומר יוליך חשמל?", "answers": ["החלקיקים בעלי מטען ומוצקים", "החלקיקים אינם טעונים אך ניידים", "החלקיקים בעלי מטען וניידים", "החומר קוולנטי"], "correct": 2 },
-        { "id": 105, "topic": "קשרים בין-מולקולריים", "difficulty": 1, "question": "מהי הקבוצה הפונקציונלית המופיעה בכוהל (Alcohol)?", "answers": ["קבוצת אסטר (R-C(O)-OR')", "קבוצת אמין (R-N-H)", "קבוצת קרבוקסיל (R-C(O)OH)", "קבוצת הידרוקסיל (R-OH)"], "correct": 3 },
-        // --- רמה 2: יישום כללים ---
+        { "id": 104, "topic": "אורביטלים", "difficulty": 1, "question": "מהו המספר המקסימלי של אלקטרונים שיכולים לאכלס אורביטל יחיד (ללא קשר לסוגו - $s, p, d$)?", "answers": ["1", "2", "6", "8"], "correct": 1 },
+        { "id": 105, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מהי הקבוצה הפונקציונלית המופיעה בכוהל (Alcohol)?", "answers": ["קבוצת אסטר (R-C(O)-OR')", "קבוצת אמין (R-N-H)", "קבוצת קרבוקסיל (R-C(O)OH)", "קבוצת הידרוקסיל (R-OH)"], "correct": 3 },
+        { "id": 106, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מה נכון לגבי הולכה חשמלית של חומר יוני?", "answers": ["מוליך חשמל כנוזל וכמוצק", "אינו מוליך חשמל כלל", "מוליך רק כמוצק", "מוליך כנוזל (מותך) ובתמיסה מימית"], "correct": 3 },
+        { "id": 107, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מה נכון לגבי אנרגיית יינון וזיקה אלקטרונית של מתכות?", "answers": ["אנרגיית יינון וזיקה אלקטרונית גבוהות", "אנרגיית יינון נמוכה וזיקה אלקטרונית גבוהה", "אנרגיית יינון גבוהה וזיקה אלקטרונית נמוכה", "אנרגיית יינון וזיקה אלקטרונית נמוכות"], "correct": 3 },
+        { "id": 108, "topic": "תכונות מחזוריות", "difficulty": 1, "question": "מהי המגמה הכללית של הרדיוס האטומי במעבר משמאל לימין בטבלה המחזורית (באותה שורה)?", "answers": ["גדל", "קטן", "נשאר זהה", "לא ניתן לקבוע"], "correct": 1 },
+        { "id": 109, "topic": "קשרים בין-מולקולריים", "difficulty": 1, "question": "מהם כוחות ואן דר ואלס?", "answers": ["קשרים תוך-מולקולריים חזקים", "קשרי מימן בלבד", "קשרי לונדון ודיפול-דיפול", "רק קשרי דיפול-דיפול"], "correct": 2 },
+        { "id": 110, "topic": "אורביטלים", "difficulty": 1, "question": "מהו העיקרון המנחה בקביעת הקונפיגורציה האלקטרונית של יסודות (מילוי האורביטלים מהנמוך לגבוה)?", "answers": ["כלל הונד", "חוק אוקטט", "עקרון האיסור של פאולי", "עקרון אאופבוי (Aufbau)"], "correct": 3 },
+        
+        // --- רמה 2: יישום, חישובים פשוטים וגאומטריה (בחנים 1 ו-2) ---
         { "id": 201, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "נתונים היסודות הבאים: $C, N, O, F$. סדר את היסודות לפי רדיוס אטומי עולה (מהקטן לגדול).", "answers": ["$F < O < N < C$", "$C < N < O < F$", "$O < F < N < C$", "$N < O < C < F$"], "correct": 0 },
         { "id": 202, "topic": "קשרים וסריגים", "difficulty": 2, "question": "איזו מולקולה מבין הבאות היא קוטבית בעלת גיאומטריה זוויתית?", "answers": ["$CO_2$ (קווי)", "$BeCl_2$ (קווי)", "$BF_3$ (משולש מישורי)", "$H_2S$ (זוויתי)"], "correct": 3 },
         { "id": 203, "topic": "קשרים וסריגים", "difficulty": 2, "question": "כמה זוגות אלקטרונים לא-קושרים קיימים במולקולת $NH_3$ (אמוניה) סביב האטום המרכזי?", "answers": ["0", "1", "2", "3"], "correct": 1 },
         { "id": 204, "topic": "קשרים בין-מולקולריים", "difficulty": 2, "question": "מדוע אתנול ($CH_3CH_2OH$) מתמוסס במים באופן טוב מאוד?", "answers": ["בגלל שהוא מולקולה לא קוטבית", "כי החלק הפחמימני שלו גדול", "בגלל יכולתו ליצור קשרי מימן עם מולקולות המים", "רק בגלל כוחות לונדון"], "correct": 2 },
-        // --- רמה 3: שאלות אתגר ---
-        { "id": 301, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "מדוע אנרגיית היינון הראשונה של חמצן $(O)$ נמוכה מזו של חנקן $(N)$?", "answers": ["חמצן רדיוס גדול יותר", "בגלל דחיית אלקטרונים באורביטל $p$ המאוכלס כפול של חמצן", "חנקן רדיוס קטן יותר", "החמצן הוא מתכת"], "correct": 1 },
-        { "id": 302, "topic": "קשרים וסריגים", "difficulty": 3, "question": "נתונים החומרים: $LiF, MgO, NaF$. למי מהם צפויה אנרגיית הסריג הגבוהה ביותר (בערך מוחלט)?", "answers": ["$LiF$ (היונים הכי קטנים)", "$NaF$ (היונים יוניים ביותר)", "$MgO$ (מטענים +2/-2, ויונים קטנים יחסית)", "$CaO$ (סידן גדול ממגנזיום)"], "correct": 2 }
+        { "id": 205, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "איזה שינוי דורש את השקעת האנרגיה הגדולה ביותר (אנרגיית יינון עוקבת)?", "answers": ["$Na_{(g)} \rightarrow Na^{+}_{(g)} + e^{-}$ (יינון ראשון)", "$Mg_{(g)} \rightarrow Mg^{+}_{(g)} + e^{-}$ (יינון ראשון)", "$Mg^{+}_{(g)} \rightarrow Mg^{2+}_{(g)} + e^{-}$ (יינון שני)", "$Al^{2+}_{(g)} \rightarrow Al^{3+}_{(g)} + e^{-}$ (יינון שלישי)"], "correct": 3 },
+        { "id": 206, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מהי הנוסחה האמפירית של תחמוצת המכילה 40% פחמן, 6.7% מימן ו-53.3% חמצן? (משקל אטומי: C=12, H=1, O=16)", "answers": ["$C_2H_4O_2$", "$CH_2O$", "$C_2HO$", "$C_3H_6O_3$"], "correct": 1 },
+        { "id": 207, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מיהו האטום המרכזי ב- $PCl_3$, ומהי הגיאומטריה המרחבית שלו?", "answers": ["P, טטראדרית", "P, פירמידה משולשת", "Cl, זוויתית", "Cl, טטראדרית"], "correct": 1 },
+        { "id": 208, "topic": "קשרים בין-מולקולריים", "difficulty": 2, "question": "סדר את החומרים הבאים לפי נקודת רתיחה עולה (מהנמוך לגבוה): $CH_4, C_2H_6, CH_3Cl, CH_3OH$.", "answers": ["$CH_4 < C_2H_6 < CH_3Cl < CH_3OH$", "$CH_3OH < C_2H_6 < CH_4 < CH_3Cl$", "$C_2H_6 < CH_4 < CH_3Cl < CH_3OH$", "$CH_4 < CH_3Cl < C_2H_6 < CH_3OH$"], "correct": 0 },
+        { "id": 209, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מה נכון לגבי יהלום?", "answers": ["מוליך חשמל בגלל האלקטרונים החופשיים", "סריג יוני עם מטענים גבוהים", "סריג אטומרי עם קשרים קוולנטיים חזקים מאוד", "חומר מולקולרי בעל נקודת רתיחה גבוהה"], "correct": 2 },
+        { "id": 210, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "נתונים החלקיקים האיזואלקטרוניים $O^{-2}, F^{-}, Ne, Na^{+}$. לאיזה חלקיק יש את הרדיוס הגדול ביותר?", "answers": ["$O^{-2}$ (המשיכה הגרעינית החלשה ביותר)", "$Na^{+}$ (מטען גרעיני הגבוה ביותר)", "$Ne$", "$F^{-}$"], "correct": 0 },
+
+        // --- רמה 3: אתגר, יוצאי דופן וחיבור ידע (בחנים 2 ו-3) ---
+        { "id": 301, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "מדוע אנרגיית היינון הראשונה של חמצן $(O)$ נמוכה מזו של חנקן $(N)$?", "answers": ["לחמצן רדיוס גדול יותר", "בגלל דחיית אלקטרונים באורביטל $p$ המאוכלס כפול של חמצן, מה שמקל על הוצאת האלקטרון", "לחנקן רדיוס קטן יותר", "החמצן הוא מתכת"], "correct": 1 },
+        { "id": 302, "topic": "קשרים וסריגים", "difficulty": 3, "question": "נתונים החומרים: $LiF, MgO, NaF$. למי מהם צפויה אנרגיית הסריג הגבוהה ביותר (בערך מוחלט)?", "answers": ["$LiF$ (היונים הכי קטנים)", "$NaF$ (היונים יוניים ביותר)", "$MgO$ (מטענים +2/-2, ויונים קטנים יחסית)", "$CaO$ (סידן גדול ממגנזיום)"], "correct": 2 },
+        { "id": 303, "topic": "קשרים וסריגים", "difficulty": 3, "question": "מה נכון לגבי הזווית במולקולות $H_2O$ ו-$NH_3$?", "answers": ["הזווית ב-$NH_3$ קטנה יותר (107°)", "הזווית ב-$H_2O$ קטנה יותר (104.5°) בגלל שיש לה שני זוגות לא-קושרים הדוחים חזק יותר", "הזוויות זהות ($109.5^{\circ}$) בגלל גיאומטריה טטראדרית", "הזווית ב-$H_2O$ גדולה יותר כי חמצן אלקטרושלילי יותר"], "correct": 1 },
+        { "id": 304, "topic": "קשרים וסריגים", "difficulty": 3, "question": "מהו סדר הקשר הממוצע של קשר חנקן-חמצן ביון המורכב $NO_3^{-}$?", "answers": ["1.0", "1.33", "1.5", "2.0"], "correct": 1 },
+        { "id": 305, "topic": "קשרים בין-מולקולריים", "difficulty": 3, "question": "מדוע צפיפות הקרח נמוכה מצפיפות המים הנוזליים?", "answers": ["מולקולות המים בקרח נעות מהר יותר ותופסות נפח", "מבנה קשרי המימן בקרח יוצר סריג פתוח עם 'חללים' ריקים", "הקרח מכיל בועות אוויר שתופסות נפח", "הקשר הקוולנטי בקרח ארוך יותר"], "correct": 1 },
+        { "id": 306, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "איזה יון בסדרת היונים האיזואלקטרוניים $S^{2-}, K^{+}, Ca^{2+}, Cl^{-}$ יגרום לקיטוב החזק ביותר של יון שכן (המקטב הטוב ביותר)?", "answers": ["$S^{2-}$ (הכי גדול)", "$K^{+}$ (מתכת אלקלית)", "$Cl^{-}$ (הכי אלקטרושלילי)", "$Ca^{2+}$ (הכי קטן ובעל מטען חיובי הגבוה ביותר)"], "correct": 3 },
+        { "id": 307, "topic": "קשרים וסריגים", "difficulty": 3, "question": "איזה מהקשרים הבאים הוא החזק ביותר והקצר ביותר?", "answers": ["$C-C$", "$C=C$", "$C \equiv C$", "$C-N$"], "correct": 2 },
+        { "id": 308, "topic": "קשרים בין-מולקולריים", "difficulty": 3, "question": "נתונות המולקולות $CH_3OH$ (אתנול) ו-$CH_3OCH_3$ (דימתיל-אתר). שתיהן בעלות אותה מסה מולרית. מדוע טמפרטורת הרתיחה של אתנול גבוהה בהרבה?", "answers": ["לאתנול מומנט דיפול קבוע יותר", "האתנול יכול ליצור קשרי מימן בין-מולקולריים, בעוד האתר אינו יכול", "לאתנול יש יותר אלקטרוני ערכיות", "המבנה הליניארי של האתר מקשה על קישור"], "correct": 1 },
+        { "id": 309, "topic": "אורביטלים", "difficulty": 3, "question": "איזו קונפיגורציה אלקטרונית תואמת יון בעל מטען $+3$ במחזור השלישי?", "answers": ["$1s^22s^22p^63s^23p^1$", "$1s^22s^22p^6$", "$1s^22s^22p^63s^23p^6$", "$1s^22s^22p^63s^1$"], "correct": 1 },
+        { "id": 310, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "מה נכון לגבי הזיקה האלקטרונית (Electron Affinity) של הלוגנים (טור 17)?", "answers": ["היא שלילית מאוד, כיוון שהם צריכים אלקטרון אחד להשלמת אוקטט יציב", "היא חיובית מאוד, כיוון שהם רוצים לאבד אלקטרון", "היא שלילית מאוד, כיוון שהרדיוס שלהם גדול מאוד", "היא חיובית מאוד, בגלל האלקטרושליליות הגבוהה"], "correct": 0 }
     ];
 
-    // --- קוד המערכת האדפטיבית (ללא שינוי, למעט פונקציית האתחול) ---
-    
+    // --- קוד המערכת האדפטיבית (ללא שינוי) ---
     const MASTERY_GOAL = 10;
     let currentLevel = 1;
     let userXP = 0;
@@ -77,41 +94,27 @@
         let availableQuestions = questionBank.filter(q => 
             q.difficulty === level && !askedQuestionIds.includes(q.id)
         );
-        
         if (availableQuestions.length === 0) {
             askedQuestionIds = [];
             availableQuestions = questionBank.filter(q => q.difficulty === level);
-            if (availableQuestions.length === 0) {
-                 return null;
-            }
+            if (availableQuestions.length === 0) { return null; }
         }
-        
         const randomIndex = Math.floor(Math.random() * availableQuestions.length);
         const selectedQuestion = availableQuestions[randomIndex];
-
         askedQuestionIds.push(selectedQuestion.id);
-        
         return selectedQuestion;
     }
 
     function loadQuestion() {
-        // מציג את התוכן אם הטעינה הצליחה
-        document.getElementById('loading-message').style.display = 'none';
-        document.getElementById('quiz-content').style.display = 'block';
+        const quizContent = document.getElementById('quiz-content');
+        if (!quizContent) return; // יציאה אם התוכן לא קיים
         
-        if (currentLevel > 3) {
-             showSummary(true); 
-             return;
-        }
+        if (currentLevel > 3) { showSummary(true); return; }
 
         const questionData = getQuestionByLevel(currentLevel);
-        if (!questionData) {
-            showSummary(false); 
-            return;
-        }
+        if (!questionData) { showSummary(false); return; }
         
         currentQuestion = questionData;
-        
         document.getElementById('question-text').innerText = currentQuestion.question;
         document.getElementById('topic-display').innerText = `נושא: ${currentQuestion.topic}`;
         const container = document.getElementById('options-container');
@@ -136,7 +139,6 @@
         if (index === currentQuestion.correct) {
             btn.classList.add('correct');
             document.getElementById('feedback-msg').innerHTML = "<span class='feedback-correct'>תשובה נכונה! 👍</span>";
-            
             masteryPoints++;
             userXP += currentLevel; 
             
@@ -190,8 +192,8 @@
         `;
     }
 
-    // אתחול: מפעיל את טעינת השאלות והתחלת המשחק
-    loadQuestion(); 
+    // מריץ את המשחק
+    loadQuestion();
 
 </script>
 
