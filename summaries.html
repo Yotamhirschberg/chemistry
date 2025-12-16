@@ -6,7 +6,7 @@
     <title>סיכומים ודגמים - כימיה ב.ג.</title>
     <link rel="stylesheet" href="style.css">
     
-    <script src="https://web.chemdoodle.com/downloads/ChemDoodleWeb.js"></script> 
+    <script src="https://3dmol.org/build/3dmol-min.js"></script> 
     
     <style>
         /* CSS ספציפי לעמוד הסיכומים */
@@ -21,16 +21,14 @@
 
         .molecule-display {
             width: 100%; 
-            max-width: 600px; /* הגבלה לגודל סביר */
+            max-width: 600px;
             height: 350px; 
             margin: 20px auto;
             border: 2px solid #3498db;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            /* מרכז את התצוגה */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* מיקום מרכזי ל-Canvas של 3Dmol */
+            position: relative; 
             overflow: hidden; 
         }
 
@@ -55,65 +53,83 @@
 
 <div class="game-container">
     <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
-    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח, ולראות כיצד המבנה משפיע על קוטביות המולקולה והקשרים הבין-מולקולריים. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
 
     <div class="summary-section">
         <h3>1. מים ($H_2O$): מבנה זוויתי וקוטביות</h3>
-        <p>למולקולת המים מבנה זוויתי (כ-$104.5^{\circ}$), וזה בגלל שיש לה שני זוגות אלקטרונים לא קושרים על אטום החמצן, הדוחפים את הקשרים. המבנה הא-סימטרי הזה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
+        <p>למולקולת המים מבנה זוויתי ($104.5^{\circ}$) בגלל שני זוגות אלקטרונים לא קושרים. מבנה א-סימטרי זה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
         <div id="canvas_water" class="molecule-display"></div>
     </div>
     
     <div class="summary-section">
         <h3>2. מתאן ($CH_4$): מבנה טטראדרי ואי-קוטביות</h3>
-        <p>למולקולת המתאן מבנה טטראדרי סימטרי (כ-$109.5^{\circ}$). בגלל הסימטריה המושלמת סביב אטום הפחמן המרכזי, מומנטי הדיפול של קשרי C-H מתבטלים והמולקולה כולה אינה קוטבית (פועלים רק כוחות לונדון).</p>
+        <p>מבנה טטראדרי סימטרי ($109.5^{\circ}$). בגלל הסימטריה המושלמת, מומנטי הדיפול מתבטלים והמולקולה כולה אינה קוטבית (פועלים רק כוחות לונדון).</p>
         <div id="canvas_methane" class="molecule-display"></div>
     </div>
 
     <div class="summary-section">
         <h3>3. חנקן ($N_2$): קשר משולש ($C \equiv C$) וסדר קשר גבוה</h3>
-        <p>מולקולת החנקן מורכבת מקשר קוולנטי משולש (סדר קשר 3), שהוא הקשר הקוולנטי החזק ביותר שקיים בכימיה. זה הופך את $N_2$ למולקולה אינרטית (לא פעילה כימית) מאוד. המבנה הוא קווי (ליניארי).</p>
+        <p>מולקולת החנקן מורכבת מקשר קוולנטי משולש (סדר קשר 3), שהוא הקשר הקוולנטי החזק ביותר בכימיה. המבנה הוא קווי (ליניארי).</p>
         <div id="canvas_nitrogen" class="molecule-display"></div>
     </div>
 
 </div>
 
 <script>
-    // --- JavaScript להצגת מולקולות: מופעל רק לאחר טעינת הדף ---
+    // --- JavaScript להצגת מולקולות באמצעות 3Dmol.js ---
     
-    // פונקציית האתחול שמפעילה את הצייר
-    function init3DViewer() {
+    // פונקציה שמפעילה את הצייר לאחר טעינת הדף
+    function init3DmolViewer() {
         
-        // הגדרות בסיסיות לכל המודלים
-        const viewerSpecs = {
-            backgroundColor: 'transparent', 
-            set3DRepresentation: 'Ball and Stick',
-            stylesToDraw: 32, 
-            projection: 'perspective',
-            allow3D: true, // לוודא שהסיבוב מופעל
-            isInteractive: true
-        };
+        // נתוני מים בפורמט PDB (אמין ונתמך)
+        const water_pdb = `
+ATOM      1  O   HOH A   1      -0.013   0.007   0.000  1.00 40.00           O
+ATOM      2  H1  HOH A   1       0.957  -0.005   0.000  1.00 40.00           H
+ATOM      3  H2  HOH A   1      -0.279  -0.887   0.000  1.00 40.00           H
+END
+        `;
 
-        // מודל 1: מים
-        let water = new ChemDoodle.ViewerCanvas('canvas_water', 600, 350, viewerSpecs);
-        let waterCDM = {"a": [{"l": "O", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.757, "x": 0.0, "z": 0.587}, {"l": "H", "y": -0.757, "x": 0.0, "z": 0.587}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}]};
-        water.loadContent(waterCDM.a, waterCDM.b);
+        // נתוני מתאן בפורמט PDB
+        const methane_pdb = `
+ATOM      1  C   MET A   1       0.000   0.000   0.000  1.00 40.00           C
+ATOM      2  H1  MET A   1       0.630   0.630   0.630  1.00 40.00           H
+ATOM      3  H2  MET A   1       0.630  -0.630  -0.630  1.00 40.00           H
+ATOM      4  H3  MET A   1      -0.630   0.630  -0.630  1.00 40.00           H
+ATOM      5  H4  MET A   1      -0.630  -0.630   0.630  1.00 40.00           H
+END
+        `;
         
-        // מודל 2: מתאן
-        let methane = new ChemDoodle.ViewerCanvas('canvas_methane', 600, 350, viewerSpecs);
-        let methaneCDM = {"a": [{"l": "C", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": 1.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": -0.5, "z": 0.866}, {"l": "H", "y": 0.866, "x": -0.5, "z": -0.5}, {"l": "H", "y": -0.866, "x": -0.5, "z": -0.5}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}, {"b": 1, "e": 4, "o": 1}, {"b": 1, "e": 5, "o": 1}]};
-        methane.loadContent(methaneCDM.a, methaneCDM.b);
+        // נתוני חנקן (N2) - לינארי וקשר משולש
+        const nitrogen_pdb = `
+ATOM      1  N1  N2  A   1      -0.540   0.000   0.000  1.00 40.00           N
+ATOM      2  N2  N2  A   1       0.540   0.000   0.000  1.00 40.00           N
+END
+        `;
 
-        // מודל 3: חנקן
-        let nitrogen = new ChemDoodle.ViewerCanvas('canvas_nitrogen', 600, 350, viewerSpecs);
-        let nitrogenCDM = {"a": [{"l": "N", "y": 0.0, "x": -0.5, "z": 0.0}, {"l": "N", "y": 0.0, "x": 0.5, "z": 0.0}], "b": [{"b": 1, "e": 2, "o": 3}]}; 
-        nitrogen.loadContent(nitrogenCDM.a, nitrogenCDM.b);
+        // פונקציית טעינה כללית
+        function loadMolecule(elementId, pdbData) {
+            let element = document.getElementById(elementId);
+            let viewer = $3Dmol.createViewer(element, { backgroundColor: 'white', defaultcolors: $3Dmol.rasmolColors });
+            
+            viewer.addModel(pdbData, "pdb");
+            
+            // הצגה ככדורים ומקלות (Ball and Stick)
+            viewer.setStyle({}, { stick: {}, sphere: { scale: 0.3 } });
+            
+            viewer.zoomTo();
+            viewer.render();
+            
+            // הפעלת סיבוב אוטומטי (לא חובה, אבל מוסיף עניין)
+            viewer.spin('y', 0.5); 
+        }
 
-        // מורה לספרייה לצייר את כל הקנבסים
-        ChemDoodle.repaintAll();
+        loadMolecule('canvas_water', water_pdb);
+        loadMolecule('canvas_methane', methane_pdb);
+        loadMolecule('canvas_nitrogen', nitrogen_pdb);
     }
     
     // מפעיל את הפונקציה רק לאחר שכל הדף נטען
-    window.onload = init3DViewer;
+    window.onload = init3DmolViewer;
 
 </script>
 </body>
