@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -41,7 +40,10 @@
             position: relative; 
             overflow: hidden; 
         }
-
+        
+        /* סימון תחתון (Subscript) לנוסחאות כימיות */
+        .sub { vertical-align: sub; font-size: smaller; }
+        
         /* עיצוב טבלאות ומונחים */
         .mastery-table {
             width: 100%;
@@ -61,9 +63,7 @@
             color: white;
             font-weight: 700;
         }
-        
-        /* סימון תחתון (Subscript) לנוסחאות כימיות */
-        .sub { vertical-align: sub; font-size: smaller; }
+
     </style>
 </head>
 <body>
@@ -131,12 +131,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית ($\text{CO}_2$)</td></tr>
-                <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית ($\text{BF}_3$)</td></tr>
-                <tr><td>זוויתית</td><td>3</td><td>1</td><td>< 120°</td><td>קוטבית ($\text{SO}_2$)</td></tr>
-                <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית ($\text{CH}_4$)</td></tr>
-                <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית ($\text{NH}_3$)</td></tr>
-                <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית ($\text{H}_2\text{O}$)</td></tr>
+                <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית (CO<sub class="sub">2</sub>)</td></tr>
+                <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית (BF<sub class="sub">3</sub>)</td></tr>
+                <tr><td>זוויתית</td><td>3</td><td>1</td><td>< 120°</td><td>קוטבית (SO<sub class="sub">2</sub>)</td></tr>
+                <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית (CH<sub class="sub">4</sub>)</td></tr>
+                <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית (NH<sub class="sub">3</sub>)</td></tr>
+                <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית (H<sub class="sub">2</sub>O)</td></tr>
             </tbody>
         </table>
     </div>
@@ -149,7 +149,8 @@
     // פונקציה כללית לטעינת קובץ PDB
     function loadMoleculeFile(elementId, filename) {
         if (typeof $3Dmol === 'undefined' || typeof $ === 'undefined') {
-            console.error("3Dmol or JQuery not loaded.");
+            // טיפול בשגיאה אם הסקריפטים לא נטענו - יציג ריבוע לבן ריק במקום הודעה
+            console.error("3Dmol or JQuery not loaded. Cannot display 3D model.");
             return; 
         }
 
@@ -166,7 +167,7 @@
             
             // הגדרת סגנון ככדורים ומקלות (Ball and Stick)
             viewer.setStyle({}, { 
-                stick: { radius: 0.15, multipleBonds: true }, // multipleBonds מנסה לנחש קשרים כפולים/משולשים
+                stick: { radius: 0.15, multipleBonds: true }, 
                 sphere: { scale: 0.3 } 
             });
 
@@ -175,7 +176,7 @@
             viewer.spin('y', 0.5); 
         }).fail(function() {
             // טיפול בשגיאה אם הקובץ לא נמצא
-            $("#" + elementId).html('<div style="color: red; text-align: center; padding-top: 150px;">שגיאת טעינה: קובץ ' + filename + ' לא נמצא בשרת.</div>');
+            $("#" + elementId).html('<div style="color: red; text-align: center; padding-top: 150px;">שגיאת טעינה: קובץ ' + filename + ' לא נמצא בשרת או נחסם.</div>');
         });
     }
 
