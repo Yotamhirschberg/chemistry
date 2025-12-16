@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -5,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>סיכומים ודגמים - כימיה בן גוריון</title>
     <link rel="stylesheet" href="./style-v2.css"> 
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./3dmol-min.js"></script> 
     
     <style>
         /* CSS ספציפי לעמוד הסיכומים */
@@ -25,7 +29,20 @@
             margin-bottom: 15px;
         }
         
-        /* עיצוב טבלאות */
+        /* הגדרת גודל לקנבס 3Dmol */
+        .molecule-display {
+            width: 100%; 
+            max-width: 600px;
+            height: 350px; 
+            margin: 20px auto;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* עיצוב טבלאות ומונחים */
         .mastery-table {
             width: 100%;
             border-collapse: collapse;
@@ -44,17 +61,9 @@
             color: white;
             font-weight: 700;
         }
-
-        .mastery-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .geom-table td:nth-child(1) {
-            font-weight: bold;
-            text-align: right;
-            width: 20%;
-        }
-
+        
+        /* סימון תחתון (Subscript) לנוסחאות כימיות */
+        .sub { vertical-align: sub; font-size: smaller; }
     </style>
 </head>
 <body>
@@ -69,57 +78,120 @@
 </div>
 
 <div class="game-container">
-    <h2>סיכום מבנה וקישור (Mastery Focus)</h2>
-    <p>כאן תוכלו למצוא סיכומים קצרים וטבלאות ידע מקיפות כחלק מההכנה לשלב המאסטר. הדגמות 3D הוחלפו בטבלאות ידע מקיפות עקב בעיות טכניות בסביבת השרת.</p>
+    <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
 
     <div class="summary-section">
-        <h3>1. טבלת גיאומטריה (VSEPR): המבנה המרחבי של 10 מולקולות מפתח</h3>
-        <p>הבנת הגיאומטריה המולקולרית חיונית לקביעת קוטביות המולקולה. המבנה נקבע לפי מספר האזורים הדוחים (זוגות אלקטרונים קושרים ולא-קושרים) סביב האטום המרכזי.</p>
-        <table class="mastery-table geom-table">
-            <thead>
-                <tr>
-                    <th>נוסחה לדוגמה</th>
-                    <th>מספר אזורים דוחים</th>
-                    <th>מבנה גיאומטרי</th>
-                    <th>זווית אופיינית</th>
-                    <th>דוגמה להבנה</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>$\text{CO}_2$</td><td>2</td><td>קווי (Linear)</td><td>$180^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
-                <tr><td>$\text{BF}_3$</td><td>3</td><td>משולש מישורי (Trigonal Planar)</td><td>$120^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
-                <tr><td>$\text{SO}_2$</td><td>3 (2 קושרים + 1 לא קושר)</td><td>זוויתית (Bent)</td><td>< $120^{\circ}$</td><td>קוטבית, זוג לא קושר דוחף חזק.</td></tr>
-                <tr><td>$\text{CH}_4$</td><td>4</td><td>טטראדרי (Tetrahedral)</td><td>$109.5^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
-                <tr><td>$\text{NH}_3$</td><td>4 (3 קושרים + 1 לא קושר)</td><td>פירמידה משולשת (Trigonal Pyramidal)</td><td>$107^{\circ}$</td><td>קוטבית, זוג לא קושר מקטין זווית.</td></tr>
-                <tr><td>$\text{H}_2\text{O}$</td><td>4 (2 קושרים + 2 לא קושרים)</td><td>זוויתית (Bent)</td><td>$104.5^{\circ}$</td><td>קוטבית, דחייה חזקה משני זוגות לא קושרים.</td></tr>
-                <tr><td>$\text{PCl}_5$</td><td>5</td><td>בי-פירמידה משולשת (Trigonal Bipyramidal)</td><td>$90^{\circ}, 120^{\circ}$</td><td>היברידיזציה $\text{sp}^3\text{d}$.</td></tr>
-                <tr><td>$\text{SF}_4$</td><td>5 (4 קושרים + 1 לא קושר)</td><td>נדנדה (Seesaw)</td><td>משתנה</td><td>קוטבית מאוד.</td></tr>
-                <tr><td>$\text{ClF}_3$</td><td>5 (3 קושרים + 2 לא קושרים)</td><td>צורת T</td><td>$90^{\circ}$</td><td>קוטבית.</td></tr>
-                <tr><td>$\text{SF}_6$</td><td>6</td><td>אוקטהדרי (Octahedral)</td><td>$90^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
-            </tbody>
-        </table>
+        <h3>1. מים (H<sub class="sub">2</sub>O): מבנה זוויתי וקוטביות</h3>
+        <p>למולקולת המים מבנה זוויתי (104.5°). מבנה א-סימטרי זה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
+        <div id="canvas_water" class="molecule-display"></div>
     </div>
     
     <div class="summary-section">
-        <h3>2. מילון מונחים והשוואות אנרגיה</h3>
+        <h3>2. מתאן (CH<sub class="sub">4</sub>): מבנה טטראדרי ואי-קוטביות</h3>
+        <p>מבנה טטראדרי סימטרי (109.5°). מומנטי הדיפול מתבטלים והמולקולה כולה אינה קוטבית.</p>
+        <div id="canvas_methane" class="molecule-display"></div>
+    </div>
+
+    <div class="summary-section">
+        <h3>3. אמוניה (NH<sub class="sub">3</sub>): פירמידה משולשת</h3>
+        <p>למולקולה זו גיאומטריה של פירמידה משולשת. זוג אלקטרונים לא-קושרים דוחף את קשרי המימן מטה.</p>
+        <div id="canvas_ammonia" class="molecule-display"></div>
+    </div>
+    
+    <div class="summary-section">
+        <h3>4. פחמן דו-חמצני (CO<sub class="sub">2</sub>): מבנה קווי</h3>
+        <p>למולקולה מבנה קווי (180°). למרות קשרים קוטביים, המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית.</p>
+        <div id="canvas_co2" class="molecule-display"></div>
+    </div>
+
+    <div class="summary-section">
+        <h3>5. מימן ציאנידי (HCN): מבנה קווי עם קשר משולש</h3>
+        <p>מולקולה קווית (180°) קוטבית מאוד, המכילה קשר משולש בין הפחמן לחנקן.</p>
+        <div id="canvas_hcn" class="molecule-display"></div>
+    </div>
+
+    <div class="summary-section">
+        <h3>6. בורון טריפלואוריד (BF<sub class="sub">3</sub>): משולש מישורי</h3>
+        <p>מולקולה סימטרית ואי-קוטבית לחלוטין. שלושה אטומים המחוברים ב-120° לאטום מרכזי (בורון).</p>
+        <div id="canvas_bf3" class="molecule-display"></div>
+    </div>
+    
+    <div class="summary-section">
+        <h3>7. מילון מונחים מרכזי</h3>
+        <p>טבלה זו מסכמת את הגיאומטריות המרחביות העיקריות והתכונות הקשורות.</p>
         <table class="mastery-table">
             <thead>
                 <tr>
-                    <th>מונח</th>
-                    <th>הגדרה / השפעה</th>
+                    <th>מבנה גיאומטרי</th>
+                    <th>אזורים דוחים</th>
+                    <th>זוגות לא-קושרים</th>
+                    <th>זווית אופיינית</th>
+                    <th>קוטביות (דוגמה)</th>
                 </tr>
             </thead>
             <tbody>
-                <tr><td>**אנרגיית יינון**</td><td>האנרגיה הדרושה להוצאת אלקטרון. **מגמה:** עולה משמאל לימין בגלל גידול במטען הגרעין האפקטיבי.</td></tr>
-                <tr><td>**אנרגיית סריג**</td><td>האנרגיה הדרושה לפירוק סריג יוני. **חזקה יותר** כאשר המטען על היונים גבוה ($+2/-2$) והרדיוס היוני קטן ($\text{MgO}$ חזק מ-$\text{NaCl}$).</td></tr>
-                <tr><td>**קשרי מימן**</td><td>נוצרים כשיש קשר מימן ישיר ל-N, O או F. יוצרות נקודת רתיחה גבוהה באופן חריג ($\text{H}_2\text{O}$ לעומת $\text{H}_2\text{S}$).</td></tr>
-                <tr><td>**אלקטרושליליות**</td><td>יכולת האטום למשוך אלקטרונים אליו בקשר קוולנטי. ככל שההפרש גדול, הקשר קוטבי יותר.</td></tr>
-                <tr><td>**כוחות לונדון**</td><td>אינטראקציות חלשות הקיימות בין כל המולקולות. חזקות יותר ככל שהמסה המולרית גדולה יותר (כלומר, ככל שיש יותר אלקטרונים).</td></tr>
+                <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית ($\text{CO}_2$)</td></tr>
+                <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית ($\text{BF}_3$)</td></tr>
+                <tr><td>זוויתית</td><td>3</td><td>1</td><td>< 120°</td><td>קוטבית ($\text{SO}_2$)</td></tr>
+                <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית ($\text{CH}_4$)</td></tr>
+                <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית ($\text{NH}_3$)</td></tr>
+                <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית ($\text{H}_2\text{O}$)</td></tr>
             </tbody>
         </table>
     </div>
 
 </div>
 
+<script>
+    // --- JavaScript לטעינת קובץ נתונים חיצוני (הפתרון האמין ביותר) ---
+    
+    // פונקציה כללית לטעינת קובץ PDB
+    function loadMoleculeFile(elementId, filename) {
+        if (typeof $3Dmol === 'undefined' || typeof $ === 'undefined') {
+            console.error("3Dmol or JQuery not loaded.");
+            return; 
+        }
+
+        // טוען את נתוני המולקולה באמצעות JQuery (יעיל ל-GitHub Pages)
+        $.get(filename, function(data) {
+            let element = document.getElementById(elementId);
+            let viewer = $3Dmol.createViewer(element, { 
+                backgroundColor: 'white', 
+                defaultcolors: $3Dmol.rasmolColors
+            });
+            
+            // מוסיף את הנתונים שנטענו
+            viewer.addModel(data, "pdb");
+            
+            // הגדרת סגנון ככדורים ומקלות (Ball and Stick)
+            viewer.setStyle({}, { 
+                stick: { radius: 0.15, multipleBonds: true }, // multipleBonds מנסה לנחש קשרים כפולים/משולשים
+                sphere: { scale: 0.3 } 
+            });
+
+            viewer.zoomTo();
+            viewer.render();
+            viewer.spin('y', 0.5); 
+        }).fail(function() {
+            // טיפול בשגיאה אם הקובץ לא נמצא
+            $("#" + elementId).html('<div style="color: red; text-align: center; padding-top: 150px;">שגיאת טעינה: קובץ ' + filename + ' לא נמצא בשרת.</div>');
+        });
+    }
+
+    // פונקציה שמפעילה את הצייר לאחר טעינת הדף
+    function init3DmolViewer() {
+        // טוען את המולקולות מקבצי ה-PDB שיצרת
+        loadMoleculeFile('canvas_water', 'water.pdb');
+        loadMoleculeFile('canvas_methane', 'methane.pdb');
+        loadMoleculeFile('canvas_ammonia', 'ammonia.pdb');
+        loadMoleculeFile('canvas_co2', 'co2.pdb');
+        loadMoleculeFile('canvas_hcn', 'hcn.pdb');
+        loadMoleculeFile('canvas_bf3', 'bf3.pdb');
+    }
+    
+    window.onload = init3DmolViewer;
+
+</script>
 </body>
 </html>
