@@ -63,7 +63,27 @@
             color: white;
             font-weight: 700;
         }
+.molecule-display {
+  position: relative;
+  touch-action: none;
+  background: white;
+}
 
+.mol-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px; /* כן, גם ב-RTL זה יותר دیکھ סטנדרטי */
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 5;
+  user-select: none;
+}
+
+        
     </style>
 </head>
 <body>
