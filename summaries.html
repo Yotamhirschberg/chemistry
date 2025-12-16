@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>סיכומים ודגמים - כימיה בן גוריון</title>
-    <link rel="stylesheet" href="./style.css"> 
+    <link rel="stylesheet" href="./style-v2.css"> 
     
     <style>
         /* CSS ספציפי לעמוד הסיכומים */
@@ -14,7 +14,7 @@
             border-radius: 8px;
             margin-bottom: 30px;
             text-align: right;
-            border-right: 5px solid #e74c3c; /* צבע הדגשה חדש */
+            border-right: 5px solid #e74c3c; 
         }
 
         .summary-section h3 {
@@ -40,7 +40,7 @@
         }
 
         .mastery-table th {
-            background-color: #34495e; /* כחול כהה/אפור לתאורה */
+            background-color: #34495e;
             color: white;
             font-weight: 700;
         }
@@ -60,7 +60,7 @@
 <body>
 
 <div class="header">
-    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת בן גוריון</h1>
+    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת **בן גוריון**</h1>
 </div>
 
 <div class="nav-bar">
@@ -70,31 +70,32 @@
 
 <div class="game-container">
     <h2>סיכום מבנה וקישור (Mastery Focus)</h2>
-    <p>כאן תוכלו למצוא סיכומים קצרים וטבלאות ידע מקיפות כחלק מההכנה לשלב המאסטר. (הדגמות ויזואליות אינטראקטיביות הוסרו עקב בעיות אבטחה בשרת).</p>
+    <p>כאן תוכלו למצוא סיכומים קצרים וטבלאות ידע מקיפות כחלק מההכנה לשלב המאסטר. הדגמות 3D הוחלפו בטבלאות ידע מקיפות עקב בעיות טכניות בסביבת השרת.</p>
 
     <div class="summary-section">
         <h3>1. טבלת גיאומטריה (VSEPR): המבנה המרחבי של 10 מולקולות מפתח</h3>
+        <p>הבנת הגיאומטריה המולקולרית חיונית לקביעת קוטביות המולקולה. המבנה נקבע לפי מספר האזורים הדוחים (זוגות אלקטרונים קושרים ולא-קושרים) סביב האטום המרכזי.</p>
         <table class="mastery-table geom-table">
             <thead>
                 <tr>
                     <th>נוסחה לדוגמה</th>
-                    <th>מספר אזורים דוחים (e⁻ זוגות)</th>
+                    <th>מספר אזורים דוחים</th>
                     <th>מבנה גיאומטרי</th>
                     <th>זווית אופיינית</th>
                     <th>דוגמה להבנה</th>
                 </tr>
             </thead>
             <tbody>
-                <tr><td>$\text{CO}_2$</td><td>2</td><td>קווי (Linear)</td><td>180°</td><td>סימטרית, אינה קוטבית.</td></tr>
-                <tr><td>$\text{BF}_3$</td><td>3</td><td>משולש מישורי (Trigonal Planar)</td><td>120°</td><td>סימטרית, אינה קוטבית.</td></tr>
-                <tr><td>$\text{SO}_2$</td><td>3 (2 קושרים + 1 לא קושר)</td><td>זוויתית (Bent)</td><td>< 120°</td><td>קוטבית, זוג לא קושר דוחף חזק.</td></tr>
-                <tr><td>$\text{CH}_4$</td><td>4</td><td>טטראדרי (Tetrahedral)</td><td>109.5°</td><td>סימטרית, אינה קוטבית (אם האטומים זהים).</td></tr>
-                <tr><td>$\text{NH}_3$</td><td>4 (3 קושרים + 1 לא קושר)</td><td>פירמידה משולשת (Trigonal Pyramidal)</td><td>107°</td><td>קוטבית, זוג לא קושר דוחף את הקשרים מטה.</td></tr>
-                <tr><td>$\text{H}_2\text{O}$</td><td>4 (2 קושרים + 2 לא קושרים)</td><td>זוויתית (Bent)</td><td>104.5°</td><td>קוטבית, דחייה חזקה משני זוגות לא קושרים.</td></tr>
-                <tr><td>$\text{PCl}_5$</td><td>5</td><td>בי-פירמידה משולשת (Trigonal Bipyramidal)</td><td>90°, 120°</td><td>היברידיזציה $sp^3d$.</td></tr>
+                <tr><td>$\text{CO}_2$</td><td>2</td><td>קווי (Linear)</td><td>$180^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
+                <tr><td>$\text{BF}_3$</td><td>3</td><td>משולש מישורי (Trigonal Planar)</td><td>$120^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
+                <tr><td>$\text{SO}_2$</td><td>3 (2 קושרים + 1 לא קושר)</td><td>זוויתית (Bent)</td><td>< $120^{\circ}$</td><td>קוטבית, זוג לא קושר דוחף חזק.</td></tr>
+                <tr><td>$\text{CH}_4$</td><td>4</td><td>טטראדרי (Tetrahedral)</td><td>$109.5^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
+                <tr><td>$\text{NH}_3$</td><td>4 (3 קושרים + 1 לא קושר)</td><td>פירמידה משולשת (Trigonal Pyramidal)</td><td>$107^{\circ}$</td><td>קוטבית, זוג לא קושר מקטין זווית.</td></tr>
+                <tr><td>$\text{H}_2\text{O}$</td><td>4 (2 קושרים + 2 לא קושרים)</td><td>זוויתית (Bent)</td><td>$104.5^{\circ}$</td><td>קוטבית, דחייה חזקה משני זוגות לא קושרים.</td></tr>
+                <tr><td>$\text{PCl}_5$</td><td>5</td><td>בי-פירמידה משולשת (Trigonal Bipyramidal)</td><td>$90^{\circ}, 120^{\circ}$</td><td>היברידיזציה $\text{sp}^3\text{d}$.</td></tr>
                 <tr><td>$\text{SF}_4$</td><td>5 (4 קושרים + 1 לא קושר)</td><td>נדנדה (Seesaw)</td><td>משתנה</td><td>קוטבית מאוד.</td></tr>
-                <tr><td>$\text{ClF}_3$</td><td>5 (3 קושרים + 2 לא קושרים)</td><td>צורת T</td><td>90°</td><td>קוטבית.</td></tr>
-                <tr><td>$\text{SF}_6$</td><td>6</td><td>אוקטהדרי (Octahedral)</td><td>90°</td><td>סימטרית, אינה קוטבית.</td></tr>
+                <tr><td>$\text{ClF}_3$</td><td>5 (3 קושרים + 2 לא קושרים)</td><td>צורת T</td><td>$90^{\circ}$</td><td>קוטבית.</td></tr>
+                <tr><td>$\text{SF}_6$</td><td>6</td><td>אוקטהדרי (Octahedral)</td><td>$90^{\circ}$</td><td>מולקולה אינה קוטבית (סימטריה).</td></tr>
             </tbody>
         </table>
     </div>
