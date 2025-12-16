@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>תרגול כימיה אדפטיבי - מכינת בן גוריון</title>
-    <link rel="stylesheet" href="./style.css"> 
+    <link rel="stylesheet" href="./style-v2.css"> 
 </head>
 <body>
 
 <div class="header">
-<h1>אתר תרגול כימיה 👨‍🔬 - מכינת בן גוריון</h1>
+    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת **בן גוריון**</h1>
 </div>
 
 <div class="nav-bar">
@@ -18,184 +18,195 @@
 </div>
 
 <div class="game-container">
-    <div id="quiz-content">
-        <div class="stats-bar">
-            <span id="level-display" class="level-badge">רמה 1 (מתחיל)</span>
-            <span>נקודות כלליות: <span id="xp-display">0</span></span>
-        </div>
+    <h2>תרגול אדפטיבי: מבנה מולקולרי וקישור</h2>
 
-        <div class="mastery-progress">
-            <div class="mastery-fill" id="mastery-progress-fill"></div>
-            <span class="mastery-text" id="mastery-text">נקודות שליטה: 0/10</span>
-        </div>
-
-        <div class="topic-display" id="topic-display">נושא: טוען...</div>
-        
-        <div id="question-text" class="question-box"></div>
-        
-        <div class="options-grid" id="options-container">
-            </div>
-
-        <div id="feedback-msg"></div>
-        <button id="next-btn" onclick="nextQuestion()">המשך</button>
+    <div class="stats-bar">
+        <span>רמת שליטה (Mastery Level): <span id="mastery-level" class="level-badge">1</span></span>
+        <span>שאלות נכונות ברצף: <span id="correct-streak">0</span></span>
     </div>
+
+    <div class="mastery-progress">
+        <div id="mastery-fill" class="mastery-fill" style="width: 0%;"></div>
+        <div id="mastery-text" class="mastery-text">התחל אימון!</div>
+    </div>
+
+    <div id="topic-display" class="topic-display">נושא נוכחי: מבנה מולקולרי</div>
+
+    <div id="question-box" class="question-box">לחץ על 'המשך' כדי להתחיל את התרגול!</div>
+
+    <div id="options-grid" class="options-grid">
+        </div>
+
+    <div id="feedback-msg"></div>
+
+    <button id="next-btn" onclick="nextQuestion()">התחל אימון</button>
 </div>
 
 <script>
-    // --- JavaScript Logic (Question Bank is EMBEDDED here, with 30 Questions) ---
-
+    // --- בנק השאלות המוטמע ---
+    // (וודא שאין מעברי שורה בתוך המרכאות בתוך בנק השאלות, זה יגרום לשגיאות!)
     const questionBank = [
-        // --- רמה 1: בסיס, הגדרות ומושגים (מצגות 3.1, 3.2, 3.5) ---
-        { "id": 101, "topic": "תכונות מחזוריות", "difficulty": 1, "question": "כאשר אטום מאבד אלקטרון והופך לקטיון, כיצד משתנה הרדיוס היוני שלו?", "answers": ["הרדיוס גדל משמעותית", "הרדיוס נשאר זהה", "הרדיוס קטן, כי הליבה חשופה ומשיכת הגרעין מתחזקת", "הרדיוס גדל, בגלל דחיית האלקטרונים"], "correct": 2 },
-        { "id": 102, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מהו סוג המבנה של חומר שאינו מוליך חשמל כנוזל או כמוצק, ובעל טמפרטורת היתוך נמוכה?", "answers": ["סריג יוני", "סריג מתכתי", "סריג אטומרי", "חומר מולקולרי"], "correct": 3 },
-        { "id": 103, "topic": "קשרים בין-מולקולריים", "difficulty": 1, "question": "איזו אינטראקציה בין-מולקולרית קיימת **בין כל** המולקולות האפשריות של חומר מולקולרי?", "answers": ["קשרי מימן", "אינטראקציות דיפול-דיפול", "כוחות לונדון (דו-קוטב רגעי)", "קשר קוולנטי"], "correct": 2 },
-        { "id": 104, "topic": "אורביטלים", "difficulty": 1, "question": "מהו המספר המקסימלי של אלקטרונים שיכולים לאכלס אורביטל יחיד (ללא קשר לסוגו - $s, p, d$)?", "answers": ["1", "2", "6", "8"], "correct": 1 },
-        { "id": 105, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מהי הקבוצה הפונקציונלית המופיעה בכוהל (Alcohol)?", "answers": ["קבוצת אסטר (R-C(O)-OR')", "קבוצת אמין (R-N-H)", "קבוצת קרבוקסיל (R-C(O)OH)", "קבוצת הידרוקסיל (R-OH)"], "correct": 3 },
-        { "id": 106, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מה נכון לגבי הולכה חשמלית של חומר יוני?", "answers": ["מוליך חשמל כנוזל וכמוצק", "אינו מוליך חשמל כלל", "מוליך רק כמוצק", "מוליך כנוזל (מותך) ובתמיסה מימית"], "correct": 3 },
-        { "id": 107, "topic": "קשרים וסריגים", "difficulty": 1, "question": "מה נכון לגבי אנרגיית יינון וזיקה אלקטרונית של מתכות?", "answers": ["אנרגיית יינון וזיקה אלקטרונית גבוהות", "אנרגיית יינון נמוכה וזיקה אלקטרונית גבוהה", "אנרגיית יינון גבוהה וזיקה אלקטרונית נמוכה", "אנרגיית יינון וזיקה אלקטרונית נמוכות"], "correct": 3 },
-        { "id": 108, "topic": "תכונות מחזוריות", "difficulty": 1, "question": "מהי המגמה הכללית של הרדיוס האטומי במעבר משמאל לימין בטבלה המחזורית (באותה שורה)?", "answers": ["גדל", "קטן", "נשאר זהה", "לא ניתן לקבוע"], "correct": 1 },
-        { "id": 109, "topic": "קשרים בין-מולקולריים", "difficulty": 1, "question": "מהם כוחות ואן דר ואלס?", "answers": ["קשרים תוך-מולקולריים חזקים", "קשרי מימן בלבד", "קשרי לונדון ודיפול-דיפול", "רק קשרי דיפול-דיפול"], "correct": 2 },
-        { "id": 110, "topic": "אורביטלים", "difficulty": 1, "question": "מהו העיקרון המנחה בקביעת הקונפיגורציה האלקטרונית של יסודות (מילוי האורביטלים מהנמוך לגבוה)?", "answers": ["כלל הונד", "חוק אוקטט", "עקרון האיסור של פאולי", "עקרון אאופבוי (Aufbau)"], "correct": 3 },
+        // רמה 1 - בסיס
+        { id: 1, question: "איזה סוג קשר נוצר בין מתכת לאל-מתכת?", answers: ["יוני", "קוולנטי", "מימני", "מתכתי"], correct: 0, topic: "סוגי קשר" },
+        { id: 2, question: "מהי הזווית האופיינית במבנה טטראדרי (כמו מתאן, CH₄)?", answers: ["90°", "180°", "109.5°", "120°"], correct: 2, topic: "גיאומטריה" },
+        { id: 3, question: "איזו מולקולה היא קוטבית ביותר?", answers: ["H₂", "F₂", "HF", "CH₄"], correct: 2, topic: "קוטביות" },
+        { id: 4, question: "מהן האינטראקציות הבין-מולקולריות החלשות ביותר?", answers: ["קשרי מימן", "קשרי דיפול-דיפול", "כוחות לונדון (ואן דר ואלס)", "קשרים יוניים"], correct: 2, topic: "כוחות בין-מולקולריים" },
+        { id: 5, question: "מיהו האטום האלקטרושלילי ביותר?", answers: ["Na", "Cl", "O", "F"], correct: 3, topic: "תכונות מחזוריות" },
         
-        // --- רמה 2: יישום, חישובים פשוטים וגאומטריה (בחנים 1 ו-2) ---
-        { "id": 201, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "נתונים היסודות הבאים: $C, N, O, F$. סדר את היסודות לפי רדיוס אטומי עולה (מהקטן לגדול).", "answers": ["$F < O < N < C$", "$C < N < O < F$", "$O < F < N < C$", "$N < O < C < F$"], "correct": 0 },
-        { "id": 202, "topic": "קשרים וסריגים", "difficulty": 2, "question": "איזו מולקולה מבין הבאות היא קוטבית בעלת גיאומטריה זוויתית?", "answers": ["$CO_2$ (קווי)", "$BeCl_2$ (קווי)", "$BF_3$ (משולש מישורי)", "$H_2S$ (זוויתי)"], "correct": 3 },
-        { "id": 203, "topic": "קשרים וסריגים", "difficulty": 2, "question": "כמה זוגות אלקטרונים לא-קושרים קיימים במולקולת $NH_3$ (אמוניה) סביב האטום המרכזי?", "answers": ["0", "1", "2", "3"], "correct": 1 },
-        { "id": 204, "topic": "קשרים בין-מולקולריים", "difficulty": 2, "question": "מדוע אתנול ($CH_3CH_2OH$) מתמוסס במים באופן טוב מאוד?", "answers": ["בגלל שהוא מולקולה לא קוטבית", "כי החלק הפחמימני שלו גדול", "בגלל יכולתו ליצור קשרי מימן עם מולקולות המים", "רק בגלל כוחות לונדון"], "correct": 2 },
-        { "id": 205, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "איזה שינוי דורש את השקעת האנרגיה הגדולה ביותר (אנרגיית יינון עוקבת)?", "answers": ["$Na_{(g)} \rightarrow Na^{+}_{(g)} + e^{-}$ (יינון ראשון)", "$Mg_{(g)} \rightarrow Mg^{+}_{(g)} + e^{-}$ (יינון ראשון)", "$Mg^{+}_{(g)} \rightarrow Mg^{2+}_{(g)} + e^{-}$ (יינון שני)", "$Al^{2+}_{(g)} \rightarrow Al^{3+}_{(g)} + e^{-}$ (יינון שלישי)"], "correct": 3 },
-        { "id": 206, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מהי הנוסחה האמפירית של תחמוצת המכילה 40% פחמן, 6.7% מימן ו-53.3% חמצן? (משקל אטומי: C=12, H=1, O=16)", "answers": ["$C_2H_4O_2$", "$CH_2O$", "$C_2HO$", "$C_3H_6O_3$"], "correct": 1 },
-        { "id": 207, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מיהו האטום המרכזי ב- $PCl_3$, ומהי הגיאומטריה המרחבית שלו?", "answers": ["P, טטראדרית", "P, פירמידה משולשת", "Cl, זוויתית", "Cl, טטראדרית"], "correct": 1 },
-        { "id": 208, "topic": "קשרים בין-מולקולריים", "difficulty": 2, "question": "סדר את החומרים הבאים לפי נקודת רתיחה עולה (מהנמוך לגבוה): $CH_4, C_2H_6, CH_3Cl, CH_3OH$.", "answers": ["$CH_4 < C_2H_6 < CH_3Cl < CH_3OH$", "$CH_3OH < C_2H_6 < CH_4 < CH_3Cl$", "$C_2H_6 < CH_4 < CH_3Cl < CH_3OH$", "$CH_4 < CH_3Cl < C_2H_6 < CH_3OH$"], "correct": 0 },
-        { "id": 209, "topic": "קשרים וסריגים", "difficulty": 2, "question": "מה נכון לגבי יהלום?", "answers": ["מוליך חשמל בגלל האלקטרונים החופשיים", "סריג יוני עם מטענים גבוהים", "סריג אטומרי עם קשרים קוולנטיים חזקים מאוד", "חומר מולקולרי בעל נקודת רתיחה גבוהה"], "correct": 2 },
-        { "id": 210, "topic": "תכונות מחזוריות", "difficulty": 2, "question": "נתונים החלקיקים האיזואלקטרוניים $O^{-2}, F^{-}, Ne, Na^{+}$. לאיזה חלקיק יש את הרדיוס הגדול ביותר?", "answers": ["$O^{-2}$ (המשיכה הגרעינית החלשה ביותר)", "$Na^{+}$ (מטען גרעיני הגבוה ביותר)", "$Ne$", "$F^{-}$"], "correct": 0 },
+        // רמה 2 - בינוני
+        { id: 6, question: "מדוע פחמן דו-חמצני (CO₂) הוא מולקולה אינה קוטבית, למרות שיש בו קשרים קוטביים?", answers: ["המולקולה היא טטראדרית ולכן סימטרית.", "המולקולה קווית (Linear) והקשרים מבטלים זה את זה.", "האלקטרושליליות של C ו-O זהה.", "בפחמן דו-חמצני יש רק קשרים יוניים."], correct: 1, topic: "קוטביות וגיאומטריה" },
+        { id: 7, question: "מה ההבדל העיקרי בין סריג יוני לסריג אטומרי?", answers: ["יוני מוליך חשמל כמוצק, אטומרי לא.", "אטומרי מורכב ממולקולות, יוני מורכב מיונים.", "אטומרי מוחזק ע'י קשרים קוולנטיים, יוני ע'י משיכה אלקטרוסטטית.", "יוני נמס בטמפרטורה נמוכה בהרבה."], correct: 2, topic: "מבני ענק" },
+        { id: 8, question: "במים (H₂O), הזווית (104.5°) קטנה מזווית טטראדרית רגילה (109.5°). מה הסיבה לכך?", answers: ["הגודל הגדול של אטום החמצן.", "דחיית הקשרים החלשה בגלל המימן.", "דחייה חזקה של שני זוגות אלקטרונים לא קושרים.", "קשרי מימן בין-מולקולריים."], correct: 2, topic: "גיאומטריה מתקדמת" },
+        { id: 9, question: "איך אנרגיית היינון משתנה כאשר יורדים בטור בטבלה המחזורית?", answers: ["עולה, בגלל הקטנת הרדיוס.", "יורדת, בגלל הגדלת הרדיוס ומסך.", "נשארת קבועה.", "יורדת, בגלל גידול במטען הגרעין."], correct: 1, topic: "תכונות מחזוריות" },
+        { id: 10, question: "איזו מולקולה יכולה ליצור קשרי מימן עם מולקולת מים אחרת?", answers: ["CH₄", "CO₂", "HF", "CCl₄"], correct: 2, topic: "כוחות בין-מולקולריים" },
+        
+        // רמה 3 - מתקדם
+        { id: 11, question: "מהי המגמה של כוחות לונדון בין מולקולות שונות?", answers: ["כוחות לונדון חזקים יותר ככל שהמסה המולרית קטנה.", "כוחות לונדון חזקים יותר ככל שיש יותר אלקטרונים במולקולה.", "כוחות לונדון חזקים רק במולקולות קוטביות.", "כוחות לונדון תלויים רק בצורת המולקולה."], correct: 1, topic: "כוחות בין-מולקולריים" },
+        { id: 12, question: "מה משפיע יותר על חוזק אנרגיית הסריג היוני: מטעני היונים או רדיוס היונים?", answers: ["מטעני היונים (למשל +2 לעומת +1)", "רדיוס היונים (המרחק בין מרכזי היונים)", "שניהם משפיעים באותה מידה", "מטעני היונים משפיעים רק על טמפ' ההתכה"], correct: 0, topic: "קשר יוני" },
+        { id: 13, question: "במה שונה המבנה של אמוניה (NH₃) מפירמידה משולשת (כמו BF₃)?", answers: ["אמוניה היא טטראדרית ואילו BF₃ היא פירמידה משולשת.", "אמוניה היא פירמידה משולשת בגלל זוג אלקטרונים לא קושר.", "הזווית ב-NH₃ גדולה יותר מ-120 מעלות.", "שניהם קוויים."], correct: 1, topic: "גיאומטריה מתקדמת" },
+        { id: 14, question: "מהו סדר הקשר במולקולת חנקן ($N \equiv N$)?", answers: ["0", "1", "2", "3"], correct: 3, topic: "סדר קשר" },
+        { id: 15, question: "איזו גיאומטריה מולקולרית תיווצר סביב אטום מרכזי עם 5 אזורים דוחים (אף אחד מהם לא קושר)?", answers: ["טטראדרי", "אוקטהדרי", "בי-פירמידה משולשת", "נדנדה"], correct: 2, topic: "גיאומטריה VSEPR" },
+        
+        // שאלות נוספות
+        { id: 16, question: "מה קורה לרדיוס האטומי כאשר נעים מימין לשמאל בשורה בטבלה המחזורית?", answers: ["הרדיוס קטן", "הרדיוס גדל", "הרדיוס נשאר זהה", "לא ניתן לקבוע"], correct: 1, topic: "תכונות מחזוריות" },
+        { id: 17, question: "מדוע גרפיט מוליך חשמל ואילו יהלום אינו מוליך חשמל?", answers: ["בגרפיט יש יונים חופשיים.", "בגרפיט יש אלקטרונים חופשיים בגלל מבנה השכבות.", "יהלום הוא סריג יוני.", "בגרפיט הקשרים יוניים."], correct: 1, topic: "מבני ענק" },
+        { id: 18, question: "מהי ההגדרה של מולקולה קוטבית?", answers: ["מולקולה עם קשרים יוניים.", "מולקולה בה פיזור המטען אינו אחיד (יש צד חיובי ושלילי).", "מולקולה שיש בה זוגות אלקטרונים לא קושרים.", "מולקולה עם טמפ' רתיחה גבוהה."], correct: 1, topic: "קוטביות" },
+        { id: 19, question: "היכן בטבלה המחזורית נמצאים האטומים עם האנרגיה יינון הנמוכה ביותר?", answers: ["בפינה הימנית העליונה.", "בפינה השמאלית התחתונה.", "במרכז הטבלה.", "באזור המתכות למעלה."], correct: 1, topic: "תכונות מחזוריות" },
+        { id: 20, question: "איזה סוג קשרים מחזיק סריג יוני במצב נוזלי (מומס)?", answers: ["קשרים קוולנטיים.", "קשרים יוניים שהתחזקו.", "אין קשרים, היונים חופשיים.", "קשרי דיפול-דיפול."], correct: 2, topic: "קשר יוני" },
+    ];
+    // --- סוף בנק השאלות ---
 
-        // --- רמה 3: אתגר, יוצאי דופן וחיבור ידע (בחנים 2 ו-3) ---
-        { "id": 301, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "מדוע אנרגיית היינון הראשונה של חמצן $(O)$ נמוכה מזו של חנקן $(N)$?", "answers": ["לחמצן רדיוס גדול יותר", "בגלל דחיית אלקטרונים באורביטל $p$ המאוכלס כפול של חמצן, מה שמקל על הוצאת האלקטרון", "לחנקן רדיוס קטן יותר", "החמצן הוא מתכת"], "correct": 1 },
-        { "id": 302, "topic": "קשרים וסריגים", "difficulty": 3, "question": "נתונים החומרים: $LiF, MgO, NaF$. למי מהם צפויה אנרגיית הסריג הגבוהה ביותר (בערך מוחלט)?", "answers": ["$LiF$ (היונים הכי קטנים)", "$NaF$ (היונים יוניים ביותר)", "$MgO$ (מטענים +2/-2, ויונים קטנים יחסית)", "$CaO$ (סידן גדול ממגנזיום)"], "correct": 2 },
-        { "id": 303, "topic": "קשרים וסריגים", "difficulty": 3, "question": "מה נכון לגבי הזווית במולקולות $H_2O$ ו-$NH_3$?", "answers": ["הזווית ב-$NH_3$ קטנה יותר (107°)", "הזווית ב-$H_2O$ קטנה יותר (104.5°) בגלל שיש לה שני זוגות לא-קושרים הדוחים חזק יותר", "הזוויות זהות ($109.5^{\circ}$) בגלל גיאומטריה טטראדרית", "הזווית ב-$H_2O$ גדולה יותר כי חמצן אלקטרושלילי יותר"], "correct": 1 },
-        { "id": 304, "topic": "קשרים וסריגים", "difficulty": 3, "question": "מהו סדר הקשר הממוצע של קשר חנקן-חמצן ביון המורכב $NO_3^{-}$?", "answers": ["1.0", "1.33", "1.5", "2.0"], "correct": 1 },
-        { "id": 305, "topic": "קשרים בין-מולקולריים", "difficulty": 3, "question": "מדוע צפיפות הקרח נמוכה מצפיפות המים הנוזליים?", "answers": ["מולקולות המים בקרח נעות מהר יותר ותופסות נפח", "מבנה קשרי המימן בקרח יוצר סריג פתוח עם 'חללים' ריקים", "הקרח מכיל בועות אוויר שתופסות נפח", "הקשר הקוולנטי בקרח ארוך יותר"], "correct": 1 },
-        { "id": 306, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "איזה יון בסדרת היונים האיזואלקטרוניים $S^{2-}, K^{+}, Ca^{2+}, Cl^{-}$ יגרום לקיטוב החזק ביותר של יון שכן (המקטב הטוב ביותר)?", "answers": ["$S^{2-}$ (הכי גדול)", "$K^{+}$ (מתכת אלקלית)", "$Cl^{-}$ (הכי אלקטרושלילי)", "$Ca^{2+}$ (הכי קטן ובעל מטען חיובי הגבוה ביותר)"], "correct": 3 },
-        { "id": 307, "topic": "קשרים וסריגים", "difficulty": 3, "question": "איזה מהקשרים הבאים הוא החזק ביותר והקצר ביותר?", "answers": ["$C-C$", "$C=C$", "$C \equiv C$", "$C-N$"], "correct": 2 },
-        { "id": 308, "topic": "קשרים בין-מולקולריים", "difficulty": 3, "question": "נתונות המולקולות $CH_3OH$ (אתנול) ו-$CH_3OCH_3$ (דימתיל-אתר). שתיהן בעלות אותה מסה מולרית. מדוע טמפרטורת הרתיחה של אתנול גבוהה בהרבה?", "answers": ["לאתנול מומנט דיפול קבוע יותר", "האתנול יכול ליצור קשרי מימן בין-מולקולריים, בעוד האתר אינו יכול", "לאתנול יש יותר אלקטרוני ערכיות", "המבנה הליניארי של האתר מקשה על קישור"], "correct": 1 },
-        { "id": 309, "topic": "אורביטלים", "difficulty": 3, "question": "איזו קונפיגורציה אלקטרונית תואמת יון בעל מטען $+3$ במחזור השלישי?", "answers": ["$1s^22s^22p^63s^23p^1$", "$1s^22s^22p^6$", "$1s^22s^22p^63s^23p^6$", "$1s^22s^22p^63s^1$"], "correct": 1 },
-        { "id": 310, "topic": "תכונות מחזוריות", "difficulty": 3, "question": "מה נכון לגבי הזיקה האלקטרונית (Electron Affinity) של הלוגנים (טור 17)?", "answers": ["היא שלילית מאוד, כיוון שהם צריכים אלקטרון אחד להשלמת אוקטט יציב", "היא חיובית מאוד, כיוון שהם רוצים לאבד אלקטרון", "היא שלילית מאוד, כיוון שהרדיוס שלהם גדול מאוד", "היא חיובית מאוד, בגלל האלקטרושליליות הגבוהה"], "correct": 0 }
+    let currentQuestion = null;
+    let correctStreak = 0;
+    let masteryLevel = 1;
+
+    // הגדרות רמות השליטה
+    const masterylimit = 5; 
+    const questionsPerLevel = [
+        [1, 2, 3, 4, 5], 
+        [6, 7, 8, 9, 10], 
+        [11, 12, 13, 14, 15]
     ];
 
-    // --- קוד המערכת האדפטיבית (ללא שינוי) ---
-    const MASTERY_GOAL = 10;
-    let currentLevel = 1;
-    let userXP = 0;
-    let masteryPoints = 0;
-    let askedQuestionIds = [];
-    let currentQuestion = {};
-
-    function getQuestionByLevel(level) {
-        let availableQuestions = questionBank.filter(q => 
-            q.difficulty === level && !askedQuestionIds.includes(q.id)
-        );
-        if (availableQuestions.length === 0) {
-            askedQuestionIds = [];
-            availableQuestions = questionBank.filter(q => q.difficulty === level);
-            if (availableQuestions.length === 0) { return null; }
-        }
-        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-        const selectedQuestion = availableQuestions[randomIndex];
-        askedQuestionIds.push(selectedQuestion.id);
-        return selectedQuestion;
-    }
-
-    function loadQuestion() {
-        const quizContent = document.getElementById('quiz-content');
-        if (!quizContent) return; // יציאה אם התוכן לא קיים
-        
-        if (currentLevel > 3) { showSummary(true); return; }
-
-        const questionData = getQuestionByLevel(currentLevel);
-        if (!questionData) { showSummary(false); return; }
-        
-        currentQuestion = questionData;
-        document.getElementById('question-text').innerText = currentQuestion.question;
-        document.getElementById('topic-display').innerText = `נושא: ${currentQuestion.topic}`;
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        
-        currentQuestion.answers.forEach((ans, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = ans;
-            btn.onclick = () => checkAnswer(index, btn);
-            container.appendChild(btn);
-        });
-
-        document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('feedback-msg').innerHTML = '';
+    document.addEventListener('DOMContentLoaded', () => {
+        nextQuestion();
         updateStats();
-    }
+    });
 
-    function checkAnswer(index, btn) {
-        document.querySelectorAll('.option-btn').forEach(b => b.onclick = null);
-
-        if (index === currentQuestion.correct) {
-            btn.classList.add('correct');
-            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-correct'>תשובה נכונה! 👍</span>";
-            masteryPoints++;
-            userXP += currentLevel; 
-            
-            if (masteryPoints >= MASTERY_GOAL && currentLevel < 3) {
-                currentLevel++;
-                masteryPoints = 0;
-                askedQuestionIds = [];
-                document.getElementById('feedback-msg').innerHTML = `<span class='feedback-level-up'>מצויין! עברת לרמה ${currentLevel}! 🎉</span>`;
-            } else if (masteryPoints >= MASTERY_GOAL && currentLevel === 3) {
-                 showSummary(true);
-                 return;
-            }
-
-        } else {
-            btn.classList.add('wrong');
-            document.querySelectorAll('.option-btn')[currentQuestion.correct].classList.add('correct');
-            document.getElementById('feedback-msg').innerHTML = "<span class='feedback-wrong'>טעות, נתרגל שוב כדי לבסס את ההבנה 🧐</span>";
-
-            masteryPoints = Math.max(0, masteryPoints - 2);
-            
-            if (currentLevel > 1 && masteryPoints < MASTERY_GOAL / 2) { 
-                currentLevel--; 
-                masteryPoints = 0;
-                askedQuestionIds = [];
-                document.getElementById('feedback-msg').innerHTML += `<span class='feedback-level-down'> הוחזרת לרמה ${currentLevel} לחיזוק.</span>`;
-            }
+    // פונקציה לבחירת שאלה רנדומלית מהרמה הנוכחית
+    function selectQuestion() {
+        const levelIndex = masteryLevel - 1;
+        const availableIDs = questionsPerLevel[levelIndex];
+        
+        if (!availableIDs || availableIDs.length === 0) {
+            alert("כל הכבוד! סיימת את כל השאלות ברמה זו!");
+            return null;
         }
 
-        document.getElementById('next-btn').style.display = 'inline-block';
-        updateStats();
+        const randomIndex = Math.floor(Math.random() * availableIDs.length);
+        const questionID = availableIDs[randomIndex];
+        
+        const question = questionBank.find(q => q.id === questionID);
+        return question;
     }
 
+    // פונקציה לעדכון מצב המשחק
     function updateStats() {
-        let levelName = "מתחיל";
-        if(currentLevel === 2) levelName = "מתקדם";
-        if(currentLevel === 3) levelName = "מומחה";
+        document.getElementById('mastery-level').textContent = masteryLevel;
+        document.getElementById('correct-streak').textContent = correctStreak;
         
-        document.getElementById('level-display').innerText = `רמה ${currentLevel} (${levelName})`;
-        document.getElementById('xp-display').innerText = userXP;
-        
-        const progressPercent = (masteryPoints / MASTERY_GOAL) * 100;
-        document.getElementById('mastery-progress-fill').style.width = progressPercent + "%";
-        document.getElementById('mastery-text').innerText = `נקודות שליטה: ${masteryPoints}/${MASTERY_GOAL}`;
+        const progress = (correctStreak / masterylimit) * 100;
+        document.getElementById('mastery-fill').style.width = progress + '%';
+
+        if (masteryLevel === 4) {
+             document.getElementById('mastery-text').textContent = "מאסטר! כל הכבוד!";
+        } else if (progress > 0) {
+             document.getElementById('mastery-text').textContent = `כדי לעלות רמה: ${masterylimit - correctStreak} נכונות נוספות`;
+        }
     }
 
-    function showSummary(completed = false) {
-        document.querySelector('.game-container').innerHTML = `
-            <h2>${completed ? 'כל הכבוד! הגעת לשליטה מוחלטת! 🥇' : 'סיימת את השאלות הזמינות.'}</h2>
-            <p>ניקוד כללי שצברת: ${userXP}</p>
-            <button onclick="location.reload()" class="next-btn" style="display:inline-block">התחל אימון חדש</button>
-        `;
+    // פונקציה לעדכון הפידבק לאחר בחירה
+    function showFeedback(isCorrect, answerIndex) {
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const optionsGrid = document.getElementById('options-grid');
+        
+        // צביעת הכפתורים
+        Array.from(optionsGrid.children).forEach((btn, index) => {
+            btn.disabled = true;
+            if (index === currentQuestion.correct) {
+                btn.classList.add('correct');
+            } else if (index === answerIndex && !isCorrect) {
+                btn.classList.add('wrong');
+            }
+        });
+        
+        // הצגת הודעת פידבק
+        if (isCorrect) {
+            feedbackMsg.textContent = "✔ תשובה נכונה!";
+            feedbackMsg.className = 'feedback-correct';
+            correctStreak++;
+        } else {
+            feedbackMsg.textContent = "❌ טעות. התשובה הנכונה מסומנת בירוק.";
+            feedbackMsg.className = 'feedback-wrong';
+            correctStreak = Math.max(0, correctStreak - 1);
+        }
+        
+        // בדיקת עליית/ירידת רמה
+        if (correctStreak >= masterylimit && masteryLevel < 3) {
+            masteryLevel++;
+            correctStreak = 0; // מתחילים רצף חדש ברמה הבאה
+            feedbackMsg.textContent += `  |  🎉 עלייה לרמה ${masteryLevel}!`;
+            feedbackMsg.className = 'feedback-level-up';
+        } else if (correctStreak === 0 && masteryLevel > 1 && !isCorrect) {
+            masteryLevel = Math.max(1, masteryLevel - 1);
+            feedbackMsg.textContent += `  |  📉 ירידה לרמה ${masteryLevel}.`;
+            feedbackMsg.className = 'feedback-level-down';
+        }
+        
+        updateStats();
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('next-btn').textContent = 'המשך לשאלה הבאה';
     }
 
-    // מריץ את המשחק
-    loadQuestion();
+    // פונקציה לבחירת תשובה
+    window.selectAnswer = function(answerIndex) {
+        if (!currentQuestion) return;
 
+        const isCorrect = (answerIndex === currentQuestion.correct);
+        showFeedback(isCorrect, answerIndex);
+    }
+
+    // פונקציה לטעינת השאלה הבאה
+    window.nextQuestion = function() {
+        // איפוס
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('feedback-msg').textContent = '';
+        document.getElementById('feedback-msg').className = '';
+
+        currentQuestion = selectQuestion();
+        
+        if (!currentQuestion) {
+            document.getElementById('question-box').innerHTML = "<h2>סיימת את כל השאלות! כל הכבוד!</h2>";
+            document.getElementById('topic-display').textContent = "";
+            return;
+        }
+
+        // הצגת השאלה
+        document.getElementById('question-box').textContent = currentQuestion.question;
+        document.getElementById('topic-display').textContent = `נושא נוכחי: ${currentQuestion.topic}`;
+        
+        const optionsGrid = document.getElementById('options-grid');
+        optionsGrid.innerHTML = '';
+        
+        // יצירת כפתורי התשובה
+        currentQuestion.answers.forEach((answer, index) => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.textContent = answer;
+            button.onclick = () => selectAnswer(index);
+            optionsGrid.appendChild(button);
+        });
+    }
 </script>
-
 </body>
 </html>
