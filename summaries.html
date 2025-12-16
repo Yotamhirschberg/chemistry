@@ -164,64 +164,109 @@
 </div>
 
 <script>
-    // --- JavaScript לטעינת קובץ נתונים חיצוני (הפתרון האמין ביותר) ---
-    
-    // פונקציה כללית לטעינת קובץ PDB
-    function loadMoleculeFile(elementId, filename) {
-        if (typeof $3Dmol === 'undefined' || typeof $ === 'undefined') {
-            console.error("3Dmol or JQuery not loaded.");
-            return; 
-        }
+  function angleDeg(a, b, c) {
+    // זווית ABC (במרכז B) בין BA ו-BC
+    const v1 = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+    const v2 = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
+    const dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+    const n1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
+    const n2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
+    const cos = Math.max(-1, Math.min(1, dot/(n1*n2)));
+    return Math.acos(cos) * 180/Math.PI;
+  }
 
-        // טוען את נתוני המולקולה באמצעות JQuery (יעיל ל-GitHub Pages)
-        $.get(filename, function(data) {
-            let element = document.getElementById(elementId);
-            
-            // --- תיקון: הגדרת Viewer עם רגישות נמוכה יותר לזום ---
-            let viewer = $3Dmol.createViewer(element, { 
-                backgroundColor: 'white', 
-                defaultcolors: $3Dmol.rasmolColors,
-                // הגדרות שליטה מותאמות אישית: מוריד את רגישות הזום
-                mouse: {
-                    zoom: {
-                        type: $3Dmol.mousemode.ZOOM,
-                        sensitivity: 0.1 // הופך את הגלגול להרבה פחות רגיש
-                    }
-                }
-            });
-            // --------------------------------------------------------
-            
-            // מוסיף את הנתונים שנטענו
-            viewer.addModel(data, "pdb");
-            
-            // הגדרת סגנון ככדורים ומקלות (Ball and Stick)
-            viewer.setStyle({}, { 
-                stick: { radius: 0.15, multipleBonds: true }, 
-                sphere: { scale: 0.3 } 
-            });
+  async function loadPDB(filename) {
+    const res = await fetch("./" + filename, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to fetch ${filename} (${res.status})`);
+    return await res.text();
+  }
 
-            viewer.zoomTo();
-            viewer.render();
-            viewer.spin('y', 0.5); 
-        }).fail(function() {
-            // טיפול בשגיאה אם הקובץ לא נמצא
-            $("#" + elementId).html('<div style="color: red; text-align: center; padding-top: 150px;">שגיאת טעינה: קובץ ' + filename + ' לא נמצא בשרת או נחסם.</div>');
-        });
+  function ensureOverlay(el) {
+    let o = el.querySelector(".mol-overlay");
+    if (!o) {
+      o = document.createElement("div");
+      o.className = "mol-overlay";
+      o.textContent = "";
+      el.appendChild(o);
+    }
+    return o;
+  }
+
+  async function initWater() {
+    const el = document.getElementById("canvas_water");
+    if (!el) return;
+
+    const overlay = ensureOverlay(el);
+    overlay.textContent = "טוען…";
+
+    const pdbText = await loadPDB("water.pdb");
+
+    const viewer = $3Dmol.createViewer(el, {
+      backgroundColor: "white"
+    });
+
+    const model = viewer.addModel(pdbText, "pdb");
+
+    // סטייל לימודי: O מודגש, H קטנים יותר
+    viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.42 }, stick: { radius: 0.20 } });
+    viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.26 }, stick: { radius: 0.14 } });
+
+    // הדגשת קשרי מימן-חמצן בצבע אחיד (לראות בקלות)
+    viewer.setStyle({ bondOrder: 1 }, { stick: { radius: 0.17 } });
+
+    // חישוב זווית לפי SERIALים מה-PDB שלך: O=1, H1=2, H2=3
+    const atoms = model.selectedAtoms({});
+    const bySerial = new Map(atoms.map(a => [a.serial, a]));
+    const O  = bySerial.get(1);
+    const H1 = bySerial.get(2);
+    const H2 = bySerial.get(3);
+
+    if (O && H1 && H2) {
+      const ang = angleDeg(H1, O, H2);
+      overlay.textContent = `זווית H–O–H: ${ang.toFixed(1)}°`;
+
+      // ציור "קשת" לזווית + קו עזר (לימודי)
+      viewer.addLine({ start: {x: O.x, y: O.y, z: O.z}, end: {x: H1.x, y: H1.y, z: H1.z} });
+      viewer.addLine({ start: {x: O.x, y: O.y, z: O.z}, end: {x: H2.x, y: H2.y, z: H2.z} });
+    } else {
+      overlay.textContent = "לא הצלחתי לזהות אטומים לחישוב זווית.";
     }
 
-    // פונקציה שמפעילה את הצייר לאחר טעינת הדף
-    function init3DmolViewer() {
-        // טוען את המולקולות מקבצי ה-PDB שיצרת
-        loadMoleculeFile('canvas_water', 'water.pdb');
-        loadMoleculeFile('canvas_methane', 'methane.pdb');
-        loadMoleculeFile('canvas_ammonia', 'ammonia.pdb');
-        loadMoleculeFile('canvas_co2', 'co2.pdb');
-        loadMoleculeFile('canvas_hcn', 'hcn.pdb'); 
-        loadMoleculeFile('canvas_bf3', 'bf3.pdb'); 
-    }
-    
-    window.onload = init3DmolViewer;
+    viewer.zoomTo();
+    viewer.render();
+    viewer.spin("y", 0.35);
 
+    // זום עדין בגלגלת + מונע scroll על הקנבס
+    el.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY > 0 ? 1.06 : 0.94;
+      viewer.zoom(zoomFactor);
+      viewer.render();
+    }, { passive: false });
+
+    // לעצור spin כשנוגעים/לוחצים
+    const stopSpin = () => viewer.spin(false);
+    el.addEventListener("mousedown", stopSpin);
+    el.addEventListener("touchstart", stopSpin, { passive: true });
+
+    // Resize יציב
+    const ro = new ResizeObserver(() => {
+      viewer.resize();
+      viewer.render();
+    });
+    ro.observe(el);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    initWater().catch(err => {
+      console.error(err);
+      const el = document.getElementById("canvas_water");
+      if (el) el.innerHTML = `<div style="color:red;text-align:center;padding-top:140px">שגיאת טעינה (מים)</div>`;
+    });
+
+    // בינתיים שאר המולקולות נשארות כמו אצלך/נטפל אחרי שנאשר שהמים מושלם
+  });
 </script>
+
 </body>
 </html>
