@@ -6,6 +6,8 @@
     <title>סיכומים ודגמים - כימיה ב.ג.</title>
     <link rel="stylesheet" href="./style.css"> 
     
+    <script src="./3dmol-min.js"></script> 
+    
     <style>
         /* CSS ספציפי לעמוד הסיכומים */
         .summary-section {
@@ -25,24 +27,17 @@
             margin-bottom: 15px;
         }
 
-        /* מסגרת להצגת ה-GIFs הסטטיים */
-        .visual-demo {
-            width: 100%;
-            height: 250px;
-            background-color: #fff;
-            border: 1px solid #ccc;
+        /* הגדרת גודל לקנבס 3Dmol */
+        .molecule-display {
+            width: 100%; 
+            max-width: 600px;
+            height: 350px; 
+            margin: 20px auto;
+            border: 2px solid #3498db;
             border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .visual-demo img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* מוודא שהתמונה מתאימה למסגרת */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative; 
+            overflow: hidden; 
         }
 
         /* עיצוב מילון מונחים */
@@ -62,7 +57,7 @@
         .glossary-table th {
             background-color: #3498db;
             color: white;
-            width: 30%; /* עמודת המונח צרה יותר */
+            width: 30%;
         }
     </style>
 </head>
@@ -78,68 +73,113 @@
 </div>
 
 <div class="game-container">
-    <h2>סיכום מבנה וקישור (Mastery Focus)</h2>
-    <p>כאן תוכלו למצוא סיכומים קצרים, מילון מונחים מרכזי והדגמות ויזואליות.</p>
+    <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
 
     <div class="summary-section">
-        <h3>1. קשרי מימן ומים (H-Bonds)</h3>
-        <p>קשרי מימן נוצרים כאשר מימן קשור לאטום אלקטרושלילי מאוד (N, O, F). בגללם, מים הם נוזל בטמפרטורת החדר וצפיפות הקרח נמוכה מצפיפות המים הנוזליים.</p>
-        <div class="visual-demo">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGQ0bTR0M2Zvd2h3bHpkZXVpOGt1NnN6czB6eGZoOXN4M2J3NWR1ZCZlcD12MV9pbnRlcm5hbF9naWYmY3Q9Zw/l0O9zF96e0u73pPXO/giphy.gif" alt="Animated model showing hydrogen bonds in water">
-        </div>
+        <h3>1. מים ($H_2O$): מבנה זוויתי וקוטביות</h3>
+        <p>למולקולת המים מבנה זוויתי ($104.5^{\circ}$) בגלל שני זוגות אלקטרונים לא קושרים. מבנה א-סימטרי זה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
+        <div id="canvas_water" class="molecule-display"></div>
     </div>
     
     <div class="summary-section">
-        <h3>2. סריג יוני (מלח)</h3>
-        <p>סריג יוני בנוי מיונים חיוביים ושליליים המתחברים בתבנית קבועה (למשל NaCl). קשרים אלו חזקים מאוד, ולכן סריגים יוניים מתאפיינים בטמפרטורות היתוך גבוהות ומוליכים חשמל כנוזל ובתמיסה, אך לא כמוצק.</p>
-        <div class="visual-demo">
-            <img src="https://i.giphy.com/media/132c3r61v2NdfO/giphy.gif" alt="Animated model of an ionic lattice (NaCl)">
-        </div>
+        <h3>2. מתאן ($CH_4$): מבנה טטראדרי ואי-קוטביות</h3>
+        <p>מבנה טטראדרי סימטרי ($109.5^{\circ}$). בגלל הסימטריה המושלמת, מומנטי הדיפול מתבטלים והמולקולה כולה אינה קוטבית.</p>
+        <div id="canvas_methane" class="molecule-display"></div>
+    </div>
+
+    <div class="summary-section">
+        <h3>3. חנקן ($N_2$): קשר משולש ($C \equiv C$) וסדר קשר גבוה</h3>
+        <p>מולקולת החנקן מורכבת מקשר קוולנטי משולש (סדר קשר 3), שהוא הקשר הקוולנטי החזק ביותר בכימיה. המבנה הוא קווי (ליניארי).</p>
+        <div id="canvas_nitrogen" class="molecule-display"></div>
     </div>
     
     <div class="summary-section">
-        <h3>3. מילון מונחים מרכזי (Mastery Terms)</h3>
+        <h3>4. מילון מונחים מרכזי (Mastery Terms)</h3>
         <table class="glossary-table">
             <thead>
-                <tr>
-                    <th>מונח</th>
-                    <th>הגדרה (דגש מתוך המצגות)</th>
-                </tr>
+                <tr><th>מונח</th><th>הגדרה (דגש מתוך המצגות)</th></tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>**אנרגיית יינון**</td>
-                    <td>האנרגיה הדרושה להוצאת אלקטרון מאטום בודד. **מגמה:** יורדת בטור, עולה בשורה. (מצגת 2)</td>
-                </tr>
-                <tr>
-                    <td>**קשר יוני**</td>
-                    <td>תוצר של משיכה חשמלית בין קטיון (+) לאניון (-). נוצר לרוב בין מתכת לאל-מתכת. יוצר מבנה של **סריג יוני**. (מצגת 3.5)</td>
-                </tr>
-                <tr>
-                    <td>**קשר קוולנטי**</td>
-                    <td>קשר שנוצר בין גרעיני אל-מתכות על ידי **שיתוף** אלקטרונים. מחזיק יחד מולקולות או **סריגים אטומריים**. (מצגת 3.1)</td>
-                </tr>
-                <tr>
-                    <td>**כוחות לונדון**</td>
-                    <td>אינטראקציות חלשות הקיימות בין **כל** המולקולות, עקב יצירת דו-קוטב רגעי. אלו כוחות ואן דר ואלס. (מצגת 3.2)</td>
-                </tr>
-                <tr>
-                    <td>**סריג אטומרי**</td>
-                    <td>מבנה ענק אינסופי המוחזק ע"י קשרים קוולנטיים (כמו יהלום או $SiO_2$). מתאפיין בנקודת היתוך גבוהה ביותר ואי-מוליכות חשמלית. (מצגת 3.3)</td>
-                </tr>
-                <tr>
-                    <td>**סדר קשר**</td>
-                    <td>מספר זוגות האלקטרונים המשותפים בין שני אטומים (1 לקשר יחיד, 2 לכפול, 3 למשולש). ככל שסדר הקשר גבוה יותר, הקשר חזק וקצר יותר. (בוחן 2)</td>
-                </tr>
-                <tr>
-                    <td>**אורביטלים**</td>
-                    <td>אזורים במרחב סביב הגרעין בהם יש סבירות גבוהה למצוא אלקטרון (למשל $s, p, d, f$). כל אורביטל יכול להכיל מקסימום 2 אלקטרונים. (מצגת 1)</td>
-                </tr>
+                <tr><td>**אנרגיית יינון**</td><td>האנרגיה הדרושה להוצאת אלקטרון מאטום בודד. **מגמה:** יורדת בטור, עולה בשורה.</td></tr>
+                <tr><td>**קשר יוני**</td><td>קשר שנוצר לרוב בין מתכת לאל-מתכת. יוצר מבנה של **סריג יוני** עם טמפרטורות היתוך גבוהות.</td></tr>
+                <tr><td>**קשר קוולנטי**</td><td>קשר שנוצר בין גרעיני אל-מתכות על ידי **שיתוף** אלקטרונים. מחזיק יחד מולקולות או **סריגים אטומריים**.</td></tr>
+                <tr><td>**כוחות לונדון**</td><td>אינטראקציות חלשות הקיימות בין **כל** המולקולות, עקב יצירת דו-קוטב רגעי.</td></tr>
+                <tr><td>**סריג אטומרי**</td><td>מבנה ענק אינסופי המוחזק ע"י קשרים קוולנטיים (כמו יהלום). מתאפיין בנקודת היתוך גבוהה ביותר ואי-מוליכות.</td></tr>
             </tbody>
         </table>
     </div>
 
 </div>
 
+<script>
+    // --- JavaScript להצגת מולקולות באמצעות 3Dmol.js (מקומית) ---
+    
+    // נתוני מים בפורמט PDB (קואורדינטות תלת-ממדיות)
+    const water_pdb = `
+ATOM      1  O   HOH A   1      -0.013   0.007   0.000  1.00 40.00           O
+ATOM      2  H1  HOH A   1       0.957  -0.005   0.000  1.00 40.00           H
+ATOM      3  H2  HOH A   1      -0.279  -0.887   0.000  1.00 40.00           H
+END
+    `;
+
+    // נתוני מתאן בפורמט PDB
+    const methane_pdb = `
+ATOM      1  C   MET A   1       0.000   0.000   0.000  1.00 40.00           C
+ATOM      2  H1  MET A   1       0.630   0.630   0.630  1.00 40.00           H
+ATOM      3  H2  MET A   1       0.630  -0.630  -0.630  1.00 40.00           H
+ATOM      4  H3  MET A   1      -0.630   0.630  -0.630  1.00 40.00           H
+ATOM      5  H4  MET A   1      -0.630  -0.630   0.630  1.00 40.00           H
+END
+    `;
+    
+    // נתוני חנקן (N2) - לינארי וקשר משולש
+    const nitrogen_pdb = `
+ATOM      1  N1  N2  A   1      -0.540   0.000   0.000  1.00 40.00           N
+ATOM      2  N2  N2  A   1       0.540   0.000   0.000  1.00 40.00           N
+END
+    `;
+
+    // פונקציית טעינה כללית
+    function loadMolecule(elementId, pdbData) {
+        let element = document.getElementById(elementId);
+        if (!element || typeof $3Dmol === 'undefined') {
+            return; // עוצר אם האלמנט או הספרייה לא נטענו
+        }
+        
+        let viewer = $3Dmol.createViewer(element, { 
+            backgroundColor: 'white', 
+            defaultcolors: $3Dmol.rasmolColors,
+            doSpin: true // מאפשר סיבוב אינטראקטיבי
+        });
+        
+        viewer.addModel(pdbData, "pdb");
+        
+        // הצגה ככדורים ומקלות (Ball and Stick)
+        viewer.setStyle({}, { stick: { radius: 0.15 }, sphere: { scale: 0.3 } });
+        
+        viewer.zoomTo();
+        viewer.render();
+        
+        // סיבוב אוטומטי קל כדי להדגיש את ה-3D
+        viewer.spin('y', 0.5); 
+    }
+
+    // פונקציה שמפעילה את הצייר לאחר טעינת הדף
+    function init3DmolViewer() {
+        // בודק שהספרייה זמינה לפני שמנסה להשתמש בה
+        if (typeof $3Dmol === 'undefined') {
+             console.error("3Dmol.js failed to load locally. Please verify '3dmol-min.js' is in the root folder.");
+             return;
+        }
+        loadMolecule('canvas_water', water_pdb);
+        loadMolecule('canvas_methane', methane_pdb);
+        loadMolecule('canvas_nitrogen', nitrogen_pdb);
+    }
+    
+    // מפעיל את הפונקציה רק לאחר שכל הדף נטען
+    window.onload = init3DmolViewer;
+
+</script>
 </body>
 </html>
