@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>סיכומים ודגמים - כימיה בן גוריון.</title>
+    <title>סיכומים ודגמים - כימיה בן גוריון</title>
     <link rel="stylesheet" href="./style.css"> 
     
-    <script src="./3dmol-min.js"></script> 
-    
     <style>
-        /* CSS ספציפי לעמוד הסיכומים (ללא שינוי, העיצוב ב-style.css) */
+        /* CSS ספציפי לעמוד הסיכומים */
         .summary-section {
             background-color: #ecf0f1;
             padding: 20px;
@@ -27,17 +25,24 @@
             margin-bottom: 15px;
         }
 
-        /* הגדרת גודל לקנבס 3Dmol */
-        .molecule-display {
-            width: 100%; 
-            max-width: 600px;
-            height: 350px; 
-            margin: 20px auto;
-            border: 2px solid #3498db;
+        /* מסגרת להצגת ה-GIFs הסטטיים */
+        .visual-demo {
+            width: 100%;
+            height: 250px;
+            background-color: #fff;
+            border: 1px solid #ccc;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative; 
-            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .visual-demo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* מוודא שהתמונה מתאימה למסגרת */
         }
 
         /* עיצוב מילון מונחים */
@@ -57,14 +62,14 @@
         .glossary-table th {
             background-color: #3498db;
             color: white;
-            width: 30%;
+            width: 30%; /* עמודת המונח צרה יותר */
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-<h1>אתר תרגול כימיה 👨‍🔬 - מכינת בן גוריון</h1>
+    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת בן גוריון</h1>
 </div>
 
 <div class="nav-bar">
@@ -73,131 +78,60 @@
 </div>
 
 <div class="game-container">
-    <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
-    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. **לחץ וגרור על המולקולה כדי לסובב אותה. גלול עם גלגלת העכבר להגדלה/הקטנה.**</p>
+    <h2>סיכום מבנה וקישור (Mastery Focus)</h2>
+    <p>כאן תוכלו למצוא סיכומים קצרים, מילון מונחים מרכזי והדגמות ויזואליות שאינן דורשות אינטראקציה.</p>
 
     <div class="summary-section">
-        <h3>1. מים (H₂O): מבנה זוויתי וקוטביות</h3>
-        <p>למולקולת המים מבנה זוויתי (כ-104.5°). המבנה הא-סימטרי הזה הופך אותה לקוטבית, דבר שמאפשר יצירת קשרי מימן.</p>
-        <div id="canvas_water" class="molecule-display"></div>
+        <h3>1. קשרי מימן ומים (H-Bonds)</h3>
+        <p>קשרי מימן הם הקשרים הבין-מולקולריים החזקים ביותר. הם נוצרים כאשר מימן קשור לאטום אלקטרושלילי מאוד (N, O, F). בגללם, מים הם נוזל בטמפרטורת החדר וצפיפות הקרח נמוכה מצפיפות המים הנוזליים.</p>
+        <div class="visual-demo">
+            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGQ0bTR0M2Zvd2h3bHpkZXVpOGt1NnN6czB6eGZoOXN4M2J3NWR1ZCZlcD12MV9pbnRlcm5hbF9naWYmY3Q9Zw/l0O9zF96e0u73pPXO/giphy.gif" alt="Animated model showing hydrogen bonds in water">
+        </div>
     </div>
     
     <div class="summary-section">
-        <h3>2. מתאן (CH₄): מבנה טטראדרי ואי-קוטביות</h3>
-        <p>מבנה טטראדרי סימטרי (כ-109.5°). בגלל הסימטריה המושלמת, מומנטי הדיפול של הקשרים מתבטלים והמולקולה כולה אינה קוטבית.</p>
-        <div id="canvas_methane" class="molecule-display"></div>
-    </div>
-
-    <div class="summary-section">
-        <h3>3. חנקן (N₂): קשר משולש</h3>
-        <p>מולקולת החנקן מורכבת מקשר קוולנטי משולש (סדר קשר 3), שהוא קשר קצר וחזק מאוד. המבנה הוא קווי (ליניארי).</p>
-        <div id="canvas_nitrogen" class="molecule-display"></div>
+        <h3>2. סריג יוני (מלח)</h3>
+        <p>סריג יוני בנוי מיונים חיוביים ושליליים המתחברים בתבנית קבועה (NaCl). קשרים אלו חזקים מאוד, ולכן סריגים יוניים מתאפיינים בטמפרטורות היתוך גבוהות מאוד ואינם מוליכים חשמל כמוצק.</p>
+        <div class="visual-demo">
+            <img src="https://i.giphy.com/media/132c3r61v2NdfO/giphy.gif" alt="Animated model of an ionic lattice (NaCl)">
+        </div>
     </div>
     
     <div class="summary-section">
-        <h3>4. פחמן דו-חמצני (CO₂): מבנה קווי</h3>
-        <p>למולקולה מבנה קווי (180°). למרות שיש קשרים קוטביים (C=O), המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית.</p>
-        <div id="canvas_co2" class="molecule-display"></div>
-    </div>
-
-    <div class="summary-section">
-        <h3>5. אמוניה (NH₃): פירמידה משולשת</h3>
-        <p>למולקולה זו גיאומטריה של פירמידה משולשת. היא נוצרת מארבעה אזורים דוחים, כאשר אחד מהם הוא זוג אלקטרונים לא-קושרים הדוחף את קשרי המימן מטה.</p>
-        <div id="canvas_ammonia" class="molecule-display"></div>
-    </div>
-
-    <div class="summary-section">
-        <h3>6. בורון טריפלואוריד (BF₃): משולש מישורי</h3>
-        <p>מולקולה סימטרית ואי-קוטבית לחלוטין. שלושה אטומים המחוברים ב-120° לאטום מרכזי (בורון). אין זוגות אלקטרונים לא קושרים על הבורון.</p>
-        <div id="canvas_bf3" class="molecule-display"></div>
-    </div>
-    
-    <div class="summary-section">
-        <h3>7. מילון מונחים מרכזי (Mastery Terms)</h3>
+        <h3>3. מילון מונחים מרכזי (Mastery Terms)</h3>
         <table class="glossary-table">
             <thead>
-                <tr><th>מונח</th><th>הגדרה (דגש מתוך המצגות)</th></tr>
+                <tr>
+                    <th>מונח</th>
+                    <th>הגדרה (דגש מתוך המצגות)</th>
+                </tr>
             </thead>
             <tbody>
-                <tr><td>**אנרגיית יינון**</td><td>האנרגיה הדרושה להוצאת אלקטרון מאטום בודד. **מגמה:** יורדת בטור, עולה בשורה.</td></tr>
-                <tr><td>**קשר יוני**</td><td>קשר שנוצר לרוב בין מתכת לאל-מתכת. יוצר מבנה של **סריג יוני** עם טמפרטורות היתוך גבוהות.</td></tr>
-                <tr><td>**קשר קוולנטי**</td><td>קשר שנוצר בין גרעיני אל-מתכות על ידי **שיתוף** אלקטרונים. מחזיק יחד מולקולות או **סריגים אטומריים**.</td></tr>
-                <tr><td>**כוחות לונדון**</td><td>אינטראקציות חלשות הקיימות בין **כל** המולקולות, עקב יצירת דו-קוטב רגעי.</td></tr>
-                <tr><td>**סריג אטומרי**</td><td>מבנה ענק אינסופי המוחזק ע"י קשרים קוולנטיים (כמו יהלום). מתאפיין בנקודת היתוך גבוהה ביותר ואי-מוליכות.</td></tr>
+                <tr>
+                    <td>**אנרגיית יינון**</td>
+                    <td>האנרגיה הדרושה להוצאת אלקטרון מאטום בודד. **מגמה:** יורדת בטור, עולה בשורה.</td>
+                </tr>
+                <tr>
+                    <td>**קשר קוולנטי**</td>
+                    <td>קשר שנוצר בין גרעיני אל-מתכות על ידי **שיתוף** אלקטרונים. מחזיק יחד מולקולות או **סריגים אטומריים**.</td>
+                </tr>
+                <tr>
+                    <td>**כוחות לונדון**</td>
+                    <td>אינטראקציות חלשות הקיימות בין **כל** המולקולות, עקב יצירת דו-קוטב רגעי.</td>
+                </tr>
+                <tr>
+                    <td>**סדר קשר**</td>
+                    <td>מספר זוגות האלקטרונים המשותפים בין שני אטומים (1 לקשר יחיד, 2 לכפול, 3 למשולש).</td>
+                </tr>
+                <tr>
+                    <td>**סריג אטומרי**</td>
+                    <td>מבנה ענק אינסופי המוחזק ע"י קשרים קוולנטיים (כמו יהלום), שמתאפיין בנקודת היתוך גבוהה ביותר ואי-מוליכות חשמלית.</td>
+                </tr>
             </tbody>
         </table>
     </div>
 
 </div>
 
-<script>
-    // --- JavaScript להצגת מולקולות באמצעות 3Dmol.js (מקומית) ---
-    
-    // נתונים בפורמט SMILES המכיל מידע על סדר הקשרים (הרבה יותר אמין מ-PDB בסיסי)
-    const SMILES = {
-        water: 'O', // פורמט זה יוצר את המבנה הזוויתי באופן אוטומטי
-        methane: 'C',
-        nitrogen: 'N#N', // ייצוג קשר משולש מפורש
-        co2: 'O=C=O', // ייצוג קשר כפול מפורש
-        ammonia: 'N',
-        bf3: 'B(F)F)F', // ייצוג משולש מישורי
-    };
-
-    // פונקציית טעינה כללית
-    function loadMolecule(elementId, smiles) {
-        let element = document.getElementById(elementId);
-        if (!element || typeof $3Dmol === 'undefined') {
-            return;
-        }
-        
-        // יצירת viewer, כולל הגבלת זום
-        let viewer = $3Dmol.createViewer(element, { 
-            backgroundColor: 'white', 
-            defaultcolors: $3Dmol.rasmolColors,
-            doSpin: true,
-            // הגדרות שליטה מותאמות אישית: מגביל את רגישות הזום
-            mouse: {
-                zoom: {
-                    type: $3Dmol.mousemode.ZOOM,
-                    sensitivity: 0.5 // מקטין את הרגישות בחצי
-                }
-            }
-        });
-        
-        // טעינת המודל מ-SMILES (אמין יותר לגאומטריה בסיסית)
-        viewer.addModel(smiles, "smi", {h2o: true}); // h2o=true מסייע בהוספת מימנים
-        
-        // חישוב גאומטריה תלת-ממדית מנתוני SMILES (כדי להבטיח זווית)
-        viewer.zoomTo();
-        viewer.render();
-        
-        // הגדרת סגנון לאחר הטעינה
-        viewer.setStyle({}, { 
-            stick: { radius: 0.15 }, 
-            sphere: { scale: 0.3 } 
-        });
-
-        // סיבוב אוטומטי קל 
-        viewer.spin('y', 0.5); 
-    }
-
-    // פונקציה שמפעילה את הצייר לאחר טעינת הדף
-    function init3DmolViewer() {
-        if (typeof $3Dmol === 'undefined') {
-             console.error("3Dmol.js failed to load locally.");
-             return;
-        }
-        
-        loadMolecule('canvas_water', SMILES.water);
-        loadMolecule('canvas_methane', SMILES.methane);
-        loadMolecule('canvas_nitrogen', SMILES.nitrogen);
-        loadMolecule('canvas_co2', SMILES.co2);
-        loadMolecule('canvas_ammonia', SMILES.ammonia);
-        loadMolecule('canvas_bf3', SMILES.bf3);
-    }
-    
-    window.onload = init3DmolViewer;
-
-</script>
 </body>
 </html>
