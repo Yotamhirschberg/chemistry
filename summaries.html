@@ -164,8 +164,24 @@
 </div>
 
 <script>
+  function ensureOverlay(el, text) {
+    let o = el.querySelector(".mol-overlay");
+    if (!o) {
+      o = document.createElement("div");
+      o.className = "mol-overlay";
+      el.appendChild(o);
+    }
+    o.textContent = text || "";
+    return o;
+  }
+
+  async function loadText(path) {
+    const res = await fetch(path, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
+    return await res.text();
+  }
+
   function angleDeg(a, b, c) {
-    // זווית ABC (במרכז B) בין BA ו-BC
     const v1 = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
     const v2 = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
     const dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
@@ -175,81 +191,76 @@
     return Math.acos(cos) * 180/Math.PI;
   }
 
-  async function loadPDB(filename) {
-    const res = await fetch("./" + filename, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to fetch ${filename} (${res.status})`);
-    return await res.text();
-  }
-
-  function ensureOverlay(el) {
-    let o = el.querySelector(".mol-overlay");
-    if (!o) {
-      o = document.createElement("div");
-      o.className = "mol-overlay";
-      o.textContent = "";
-      el.appendChild(o);
-    }
-    return o;
-  }
-
   async function initWater() {
     const el = document.getElementById("canvas_water");
     if (!el) return;
 
-    const overlay = ensureOverlay(el);
-    overlay.textContent = "טוען…";
+    const overlay = ensureOverlay(el, "טוען מודל…");
 
-    const pdbText = await loadPDB("water.pdb");
+    const pdb = await loadText("./water.pdb");
 
     const viewer = $3Dmol.createViewer(el, {
-      backgroundColor: "white"
+      backgroundColor: "white",
+      defaultcolors: $3Dmol.rasmolColors
     });
 
-    const model = viewer.addModel(pdbText, "pdb");
+    const model = viewer.addModel(pdb, "pdb");
 
-    // סטייל לימודי: O מודגש, H קטנים יותר
-    viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.42 }, stick: { radius: 0.20 } });
-    viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.26 }, stick: { radius: 0.14 } });
+    // יש לך CONECT, אבל אם משהו חסר — נוודא קשרים בכל מקרה
+    try { model.assignBonds(); } catch (e) {}
 
-    // הדגשת קשרי מימן-חמצן בצבע אחיד (לראות בקלות)
-    viewer.setStyle({ bondOrder: 1 }, { stick: { radius: 0.17 } });
+    // --- בסיס: לכל האטומים גם כדורים וגם מקלות (ככה לא “נעלמים” H) ---
+    viewer.setStyle({}, {
+      stick: { radius: 0.22, multipleBonds: true },  // קשרים מודגשים וישרים
+      sphere: { scale: 0.34 }                        // אטומים ברורים
+    });
 
-    // חישוב זווית לפי SERIALים מה-PDB שלך: O=1, H1=2, H2=3
+    // --- הדגשה לימודית: O גדול יותר, H קטן יותר ---
+    viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.46 } });
+    viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 } });
+
+    // זיהוי האטומים לפי SERIAL מה-PDB שלך: O=1, H1=2, H2=3
     const atoms = model.selectedAtoms({});
     const bySerial = new Map(atoms.map(a => [a.serial, a]));
     const O  = bySerial.get(1);
     const H1 = bySerial.get(2);
     const H2 = bySerial.get(3);
 
+    let angleText = "";
     if (O && H1 && H2) {
       const ang = angleDeg(H1, O, H2);
-      overlay.textContent = `זווית H–O–H: ${ang.toFixed(1)}°`;
-
-      // ציור "קשת" לזווית + קו עזר (לימודי)
-      viewer.addLine({ start: {x: O.x, y: O.y, z: O.z}, end: {x: H1.x, y: H1.y, z: H1.z} });
-      viewer.addLine({ start: {x: O.x, y: O.y, z: O.z}, end: {x: H2.x, y: H2.y, z: H2.z} });
-    } else {
-      overlay.textContent = "לא הצלחתי לזהות אטומים לחישוב זווית.";
+      angleText = ` • זווית H–O–H: ${ang.toFixed(1)}°`;
     }
+
+    overlay.textContent = `צורה: זוויתית (Bent)${angleText}`;
 
     viewer.zoomTo();
     viewer.render();
-    viewer.spin("y", 0.35);
 
-    // זום עדין בגלגלת + מונע scroll על הקנבס
+    // סיבוב חלק 360° סביב ציר "מאוזן" (אצל רוב האנשים: ציר Y נותן “סיבוב סביב עצמו”)
+    // אם אתה רוצה “גלגול” ממש (ציר X), החלף ל- viewer.spin("x", 0.45)
+    viewer.spin("y", 0.45);
+
+    // --- זום עדין ונשלט (בלי “קפיצה”) ---
     el.addEventListener("wheel", (e) => {
       e.preventDefault();
-      const zoomFactor = e.deltaY > 0 ? 1.06 : 0.94;
+
+      // נרמל עוצמה כדי לא לקפוץ גם בעכברים "מהירים"
+      const dy = Math.max(-120, Math.min(120, e.deltaY));
+      const strength = Math.abs(dy) / 120; // 0..1
+      const step = 1 + (0.06 * strength);  // עדין מאוד: 6% מקס'
+
+      const zoomFactor = dy > 0 ? step : (1 / step);
       viewer.zoom(zoomFactor);
       viewer.render();
     }, { passive: false });
 
-    // לעצור spin כשנוגעים/לוחצים
+    // כשאתה גורר כדי לסובב — נעצור spin (אחרת זה מרגיש “נלחם”)
     const stopSpin = () => viewer.spin(false);
     el.addEventListener("mousedown", stopSpin);
     el.addEventListener("touchstart", stopSpin, { passive: true });
 
-    // Resize יציב
+    // resize יציב
     const ro = new ResizeObserver(() => {
       viewer.resize();
       viewer.render();
@@ -263,8 +274,6 @@
       const el = document.getElementById("canvas_water");
       if (el) el.innerHTML = `<div style="color:red;text-align:center;padding-top:140px">שגיאת טעינה (מים)</div>`;
     });
-
-    // בינתיים שאר המולקולות נשארות כמו אצלך/נטפל אחרי שנאשר שהמים מושלם
   });
 </script>
 
