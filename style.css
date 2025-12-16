@@ -1,240 +1,204 @@
-/* --- style.css - Advanced Lab Theme --- */
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
+/* --- עיצוב אתר כימיה: Soft Science Theme --- */
 
-/* הגדרות גלובליות */
+/* הגדרות כלליות */
 body {
-    font-family: 'Heebo', sans-serif; /* שימוש בפונט נקי ומודרני */
-    background-color: #f0f4f8; /* רקע בהיר ורגוע */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    direction: rtl;
+    text-align: right;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    line-height: 1.6;
+    background-color: #f4f7f9; /* רקע עדין */
     color: #333;
 }
 
-/* כותרת עליונה - "ראש מעבדה" */
+/* כותרת עליונה */
 .header {
-    background-color: #2c3e50; /* כחול כהה - רציני ומקצועי */
-    color: #ecf0f1;
-    width: 100%;
-    padding: 30px 0;
+    background: linear-gradient(135deg, #3498db, #2980b9); /* גוון כחול עמוק */
+    color: white;
+    padding: 20px 0;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .header h1 {
-    font-weight: 900;
-    font-size: 36px;
     margin: 0;
+    font-size: 2.2em;
     letter-spacing: 1px;
 }
 
-/* קונטיינר מרכזי - נקי וממוקד */
+/* מיכל ראשי */
 .game-container {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     width: 90%;
-    max-width: 750px; /* הגדלה קלה של הרוחב */
-    text-align: center;
-    border: 1px solid #ddd;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-/* סרגל סטטיסטיקות - נקי וברור */
+.game-container h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #e74c3c; /* קו הפרדה בצבע אזהרה/דגש */
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+/* סרגל סטטיסטיקות */
 .stats-bar {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #ecf0f1;
-    border-radius: 8px;
-    font-weight: 700;
+    padding: 10px 15px;
+    background-color: #ecf0f1; /* רקע אפור בהיר */
+    border-radius: 6px;
+    font-weight: bold;
     color: #2c3e50;
-    border-left: 5px solid #3498db;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
 .level-badge {
-    background-color: #3498db; /* כחול עמוק */
+    background-color: #1abc9c; /* ירוק רענן */
     color: white;
-    padding: 6px 18px;
-    border-radius: 25px;
-    font-size: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 1.1em;
 }
 
-/* מד שליטה - ויזואלי ומעודד */
+/* מד התקדמות (Mastery Progress) */
 .mastery-progress {
-    width: 100%;
-    background-color: #e0e0e0;
-    height: 18px;
-    border-radius: 9px;
-    margin: 15px 0 30px 0;
-    overflow: hidden;
+    background-color: #ecf0f1;
+    border-radius: 15px;
+    height: 30px;
+    margin-bottom: 25px;
     position: relative;
-    border: 1px solid #bdc3c7;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .mastery-fill {
     height: 100%;
-    background-color: #2ecc71; /* ירוק חיים - מעבר טוב יותר */
-    width: 0%;
-    transition: width 0.6s ease-in-out;
+    background-color: #f39c12; /* כתום זהוב */
+    transition: width 0.4s ease-in-out;
 }
 
 .mastery-text {
     position: absolute;
     width: 100%;
     text-align: center;
-    line-height: 18px;
+    line-height: 30px;
     color: #2c3e50;
-    font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     text-shadow: 0 0 1px white;
 }
 
-/* הצגת הנושא - ממוקד */
+/* תצוגת נושא */
 .topic-display {
-    font-size: 18px;
-    color: #7f8c8d;
-    margin-bottom: 25px;
-    padding: 10px 0;
-    border-bottom: 2px dashed #ecf0f1;
-    font-weight: 400;
+    text-align: center;
+    font-size: 1.1em;
+    color: #95a5a6;
+    margin-bottom: 15px;
 }
 
-/* תיבת השאלה - המרכז */
+/* תיבת שאלה */
 .question-box {
-    font-size: 26px;
-    margin-bottom: 40px;
-    font-weight: 700;
-    color: #c0392b; /* אדום חזק למיקוד */
-    padding: 15px;
-    border: 1px dashed #f1c40f; /* קו הפרדה עדין */
-    border-radius: 5px;
-    background-color: #fffde7; /* רקע צהבהב עדין */
+    background-color: #f9f9f9;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-bottom: 25px;
+    line-height: 1.6;
 }
 
-/* רשת אפשרויות - קריאה ונגישות */
+/* כפתורי אפשרויות */
 .options-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
+    margin-bottom: 20px;
 }
 
 .option-btn {
-    background-color: #fcfcfc;
+    padding: 15px;
+    font-size: 1.1em;
     border: 2px solid #bdc3c7;
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 18px;
+    background-color: #fff;
+    color: #34495e;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.2s ease-in-out;
     text-align: right;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .option-btn:hover {
-    background-color: #e9f5ff;
+    background-color: #ecf0f1;
     border-color: #3498db;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
 }
 
-/* סגנונות פידבק */
-.correct { 
-    background-color: #d4edda !important; 
-    border-color: #2ecc71 !important; 
-    color: #155724; 
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.6);
+.option-btn.correct {
+    background-color: #2ecc71; /* ירוק */
+    color: white;
+    border-color: #27ae60;
 }
 
-.wrong { 
-    background-color: #f8d7da !important; 
-    border-color: #e74c3c !important; 
-    color: #721c24; 
-    box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+.option-btn.wrong {
+    background-color: #e74c3c; /* אדום */
+    color: white;
+    border-color: #c0392b;
 }
 
-.feedback-msg {
-    min-height: 40px;
-    margin-top: 25px;
+/* הודעות פידבק */
+#feedback-msg {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 0;
 }
 
-.feedback-correct { color: #2ecc71; font-size: 1.2em; font-weight: 700; }
-.feedback-wrong { color: #e74c3c; font-size: 1.2em; font-weight: 700; }
-.feedback-level-up { color: #3498db; font-size: 1.3em; font-weight: 900; }
-.feedback-level-down { color: #f39c12; font-size: 1.1em; font-weight: 700; }
+.feedback-correct {
+    color: #27ae60;
+}
 
-/* כפתור המשך - מודגש */
+.feedback-wrong {
+    color: #c0392b;
+}
+
+.feedback-level-up {
+    color: #f39c12;
+}
+
+.feedback-level-down {
+    color: #e74c3c;
+}
+
+/* כפתור המשך (Next) */
 #next-btn {
-    margin-top: 30px;
-    padding: 15px 40px;
-    background-color: #1abc9c; /* ירוק-כחול רענן */
+    padding: 12px 30px;
+    font-size: 1.2em;
+    background-color: #3498db;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    transition: background-color 0.2s, transform 0.2s;
-    box-shadow: 0 4px 10px rgba(26, 188, 156, 0.4);
+    transition: background-color 0.2s;
+    display: block;
+    width: 100%;
 }
 
 #next-btn:hover {
-    background-color: #16a085;
-    transform: translateY(-2px);
+    background-color: #2980b9;
 }
 
-/* אנימציית קצוות (מעבדה) */
-.game-container::before,
-.game-container::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 4px solid #3498db;
-    border-radius: 50%;
-    opacity: 0.2;
-    z-index: -1;
-    animation: pulse 4s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.8); opacity: 0.3; }
-    50% { transform: scale(1.1); opacity: 0.1; }
-    100% { transform: scale(0.8); opacity: 0.3; }
-}
-
-/* מיקום האנימציות */
-.game-container::before {
-    top: -15px;
-    right: -15px;
-}
-
-.game-container::after {
-    bottom: -15px;
-    left: -15px;
-    animation-delay: 2s;
-}
-
-/* עיצוב דף סיכום */
-.game-container h2 {
-    color: #1abc9c;
-    font-size: 28px;
-}
-/* --- CSS עבור סרגל ניווט --- */
+/* --- ניווט (Navigation) --- */
 .nav-bar {
     width: 90%;
-    max-width: 750px;
-    margin-bottom: 20px;
+    max-width: 800px;
+    margin: 20px auto 30px auto;
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -244,49 +208,32 @@ body {
     flex-grow: 1;
     padding: 12px 15px;
     text-align: center;
-    background-color: #f39c12; /* צבע כתום-זהב */
+    background-color: #95a5a6; /* אפור ביניים */
     color: white;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 700;
     transition: background-color 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
 }
 
 .nav-btn:hover {
-    background-color: #d35400; /* כתום כהה יותר */
+    background-color: #7f8c8d; 
 }
 
 .active-tab {
     background-color: #1abc9c !important; /* ירוק-כחול מודגש ללשונית הפעילה */
-}
-/* --- CSS עבור סרגל ניווט (מופיע בסוף כדי להבטיח דריסה/עדיפות) --- */
-.nav-bar {
-    width: 90%;
-    max-width: 750px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    box-shadow: 0 4px 8px rgba(26, 188, 156, 0.4);
 }
 
-.nav-btn {
-    flex-grow: 1;
-    padding: 12px 15px;
-    text-align: center;
-    background-color: #f39c12; /* צבע כתום-זהב */
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 700;
-    transition: background-color 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+/* רספונסיביות - משנים לטור אחד במסכים קטנים */
+@media (max-width: 600px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
 
-.nav-btn:hover {
-    background-color: #d35400; /* כתום כהה יותר */
-}
-
-.active-tab {
-    background-color: #1abc9c !important; /* ירוק-כחול מודגש ללשונית הפעילה */
+    .nav-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
 }
