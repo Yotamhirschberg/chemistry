@@ -14,56 +14,47 @@
             border-radius: 8px;
             margin-bottom: 30px;
             text-align: right;
-            border-right: 5px solid #1abc9c;
+            border-right: 5px solid #e74c3c; /* צבע הדגשה חדש */
         }
 
         .summary-section h3 {
             color: #2c3e50;
-            border-bottom: 1px solid #c0392b;
+            border-bottom: 1px solid #3498db;
             padding-bottom: 5px;
             margin-top: 0;
             margin-bottom: 15px;
         }
-
-        /* מסגרת להצגת ה-GIFs הסטטיים */
-        .visual-demo {
-            width: 100%;
-            height: 250px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .visual-demo img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* מוודא שהתמונה מתאימה למסגרת */
-        }
-
-        /* עיצוב מילון מונחים */
-        .glossary-table {
+        
+        /* עיצוב טבלאות */
+        .mastery-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 15px;
+            margin-top: 15px;
+            font-size: 0.95em;
         }
 
-        .glossary-table th, .glossary-table td {
+        .mastery-table th, .mastery-table td {
             border: 1px solid #ddd;
-            padding: 10px;
-            text-align: right;
+            padding: 12px;
+            text-align: center;
         }
 
-        .glossary-table th {
-            background-color: #3498db;
+        .mastery-table th {
+            background-color: #34495e; /* כחול כהה/אפור לתאורה */
             color: white;
-            width: 30%; /* עמודת המונח צרה יותר */
+            font-weight: 700;
         }
+
+        .mastery-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .geom-table td:nth-child(1) {
+            font-weight: bold;
+            text-align: right;
+            width: 20%;
+        }
+
     </style>
 </head>
 <body>
@@ -79,54 +70,50 @@
 
 <div class="game-container">
     <h2>סיכום מבנה וקישור (Mastery Focus)</h2>
-    <p>כאן תוכלו למצוא סיכומים קצרים, מילון מונחים מרכזי והדגמות ויזואליות שאינן דורשות אינטראקציה.</p>
+    <p>כאן תוכלו למצוא סיכומים קצרים וטבלאות ידע מקיפות כחלק מההכנה לשלב המאסטר. (הדגמות ויזואליות אינטראקטיביות הוסרו עקב בעיות אבטחה בשרת).</p>
 
     <div class="summary-section">
-        <h3>1. קשרי מימן ומים (H-Bonds)</h3>
-        <p>קשרי מימן הם הקשרים הבין-מולקולריים החזקים ביותר. הם נוצרים כאשר מימן קשור לאטום אלקטרושלילי מאוד (N, O, F). בגללם, מים הם נוזל בטמפרטורת החדר וצפיפות הקרח נמוכה מצפיפות המים הנוזליים.</p>
-        <div class="visual-demo">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGQ0bTR0M2Zvd2h3bHpkZXVpOGt1NnN6czB6eGZoOXN4M2J3NWR1ZCZlcD12MV9pbnRlcm5hbF9naWYmY3Q9Zw/l0O9zF96e0u73pPXO/giphy.gif" alt="Animated model showing hydrogen bonds in water">
-        </div>
-    </div>
-    
-    <div class="summary-section">
-        <h3>2. סריג יוני (מלח)</h3>
-        <p>סריג יוני בנוי מיונים חיוביים ושליליים המתחברים בתבנית קבועה (NaCl). קשרים אלו חזקים מאוד, ולכן סריגים יוניים מתאפיינים בטמפרטורות היתוך גבוהות מאוד ואינם מוליכים חשמל כמוצק.</p>
-        <div class="visual-demo">
-            <img src="https://i.giphy.com/media/132c3r61v2NdfO/giphy.gif" alt="Animated model of an ionic lattice (NaCl)">
-        </div>
-    </div>
-    
-    <div class="summary-section">
-        <h3>3. מילון מונחים מרכזי (Mastery Terms)</h3>
-        <table class="glossary-table">
+        <h3>1. טבלת גיאומטריה (VSEPR): המבנה המרחבי של 10 מולקולות מפתח</h3>
+        <table class="mastery-table geom-table">
             <thead>
                 <tr>
-                    <th>מונח</th>
-                    <th>הגדרה (דגש מתוך המצגות)</th>
+                    <th>נוסחה לדוגמה</th>
+                    <th>מספר אזורים דוחים (e⁻ זוגות)</th>
+                    <th>מבנה גיאומטרי</th>
+                    <th>זווית אופיינית</th>
+                    <th>דוגמה להבנה</th>
                 </tr>
             </thead>
             <tbody>
+                <tr><td>$\text{CO}_2$</td><td>2</td><td>קווי (Linear)</td><td>180°</td><td>סימטרית, אינה קוטבית.</td></tr>
+                <tr><td>$\text{BF}_3$</td><td>3</td><td>משולש מישורי (Trigonal Planar)</td><td>120°</td><td>סימטרית, אינה קוטבית.</td></tr>
+                <tr><td>$\text{SO}_2$</td><td>3 (2 קושרים + 1 לא קושר)</td><td>זוויתית (Bent)</td><td>< 120°</td><td>קוטבית, זוג לא קושר דוחף חזק.</td></tr>
+                <tr><td>$\text{CH}_4$</td><td>4</td><td>טטראדרי (Tetrahedral)</td><td>109.5°</td><td>סימטרית, אינה קוטבית (אם האטומים זהים).</td></tr>
+                <tr><td>$\text{NH}_3$</td><td>4 (3 קושרים + 1 לא קושר)</td><td>פירמידה משולשת (Trigonal Pyramidal)</td><td>107°</td><td>קוטבית, זוג לא קושר דוחף את הקשרים מטה.</td></tr>
+                <tr><td>$\text{H}_2\text{O}$</td><td>4 (2 קושרים + 2 לא קושרים)</td><td>זוויתית (Bent)</td><td>104.5°</td><td>קוטבית, דחייה חזקה משני זוגות לא קושרים.</td></tr>
+                <tr><td>$\text{PCl}_5$</td><td>5</td><td>בי-פירמידה משולשת (Trigonal Bipyramidal)</td><td>90°, 120°</td><td>היברידיזציה $sp^3d$.</td></tr>
+                <tr><td>$\text{SF}_4$</td><td>5 (4 קושרים + 1 לא קושר)</td><td>נדנדה (Seesaw)</td><td>משתנה</td><td>קוטבית מאוד.</td></tr>
+                <tr><td>$\text{ClF}_3$</td><td>5 (3 קושרים + 2 לא קושרים)</td><td>צורת T</td><td>90°</td><td>קוטבית.</td></tr>
+                <tr><td>$\text{SF}_6$</td><td>6</td><td>אוקטהדרי (Octahedral)</td><td>90°</td><td>סימטרית, אינה קוטבית.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="summary-section">
+        <h3>2. מילון מונחים והשוואות אנרגיה</h3>
+        <table class="mastery-table">
+            <thead>
                 <tr>
-                    <td>**אנרגיית יינון**</td>
-                    <td>האנרגיה הדרושה להוצאת אלקטרון מאטום בודד. **מגמה:** יורדת בטור, עולה בשורה.</td>
+                    <th>מונח</th>
+                    <th>הגדרה / השפעה</th>
                 </tr>
-                <tr>
-                    <td>**קשר קוולנטי**</td>
-                    <td>קשר שנוצר בין גרעיני אל-מתכות על ידי **שיתוף** אלקטרונים. מחזיק יחד מולקולות או **סריגים אטומריים**.</td>
-                </tr>
-                <tr>
-                    <td>**כוחות לונדון**</td>
-                    <td>אינטראקציות חלשות הקיימות בין **כל** המולקולות, עקב יצירת דו-קוטב רגעי.</td>
-                </tr>
-                <tr>
-                    <td>**סדר קשר**</td>
-                    <td>מספר זוגות האלקטרונים המשותפים בין שני אטומים (1 לקשר יחיד, 2 לכפול, 3 למשולש).</td>
-                </tr>
-                <tr>
-                    <td>**סריג אטומרי**</td>
-                    <td>מבנה ענק אינסופי המוחזק ע"י קשרים קוולנטיים (כמו יהלום), שמתאפיין בנקודת היתוך גבוהה ביותר ואי-מוליכות חשמלית.</td>
-                </tr>
+            </thead>
+            <tbody>
+                <tr><td>**אנרגיית יינון**</td><td>האנרגיה הדרושה להוצאת אלקטרון. **מגמה:** עולה משמאל לימין בגלל גידול במטען הגרעין האפקטיבי.</td></tr>
+                <tr><td>**אנרגיית סריג**</td><td>האנרגיה הדרושה לפירוק סריג יוני. **חזקה יותר** כאשר המטען על היונים גבוה ($+2/-2$) והרדיוס היוני קטן ($\text{MgO}$ חזק מ-$\text{NaCl}$).</td></tr>
+                <tr><td>**קשרי מימן**</td><td>נוצרים כשיש קשר מימן ישיר ל-N, O או F. יוצרות נקודת רתיחה גבוהה באופן חריג ($\text{H}_2\text{O}$ לעומת $\text{H}_2\text{S}$).</td></tr>
+                <tr><td>**אלקטרושליליות**</td><td>יכולת האטום למשוך אלקטרונים אליו בקשר קוולנטי. ככל שההפרש גדול, הקשר קוטבי יותר.</td></tr>
+                <tr><td>**כוחות לונדון**</td><td>אינטראקציות חלשות הקיימות בין כל המולקולות. חזקות יותר ככל שהמסה המולרית גדולה יותר (כלומר, ככל שיש יותר אלקטרונים).</td></tr>
             </tbody>
         </table>
     </div>
