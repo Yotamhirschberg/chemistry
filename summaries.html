@@ -27,6 +27,11 @@
             border: 2px solid #3498db;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            /* מרכז את התצוגה */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; 
         }
 
         .summary-section h3 {
@@ -73,38 +78,43 @@
 </div>
 
 <script>
-    // --- JavaScript להצגת מולקולות באמצעות ChemDoodle ---
+    // --- JavaScript להצגת מולקולות: מופעל רק לאחר טעינת הדף ---
     
-    // הגדרת מודל המים
-    let water = new ChemDoodle.ViewerCanvas('canvas_water', 400, 350);
-    water.specs.backgroundColor = 'transparent'; 
-    water.specs.set3DRepresentation('Ball and Stick');
-    water.specs.stylesToDraw = 32; 
-    water.specs.projection = 'perspective';
-    // נשתמש בפורמט ChemDoodle JSON (CDM) שהוא בדרך כלל אמין יותר מ-MOL
-    let waterCDM = {"a": [{"l": "O", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.757, "x": 0.0, "z": 0.587}, {"l": "H", "y": -0.757, "x": 0.0, "z": 0.587}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}]};
-    water.loadContent(waterCDM.a, waterCDM.b);
+    // פונקציית האתחול שמפעילה את הצייר
+    function init3DViewer() {
+        
+        // הגדרות בסיסיות לכל המודלים
+        const viewerSpecs = {
+            backgroundColor: 'transparent', 
+            set3DRepresentation: 'Ball and Stick',
+            stylesToDraw: 32, 
+            projection: 'perspective',
+            allow3D: true, // לוודא שהסיבוב מופעל
+            isInteractive: true
+        };
+
+        // מודל 1: מים
+        let water = new ChemDoodle.ViewerCanvas('canvas_water', 600, 350, viewerSpecs);
+        let waterCDM = {"a": [{"l": "O", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.757, "x": 0.0, "z": 0.587}, {"l": "H", "y": -0.757, "x": 0.0, "z": 0.587}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}]};
+        water.loadContent(waterCDM.a, waterCDM.b);
+        
+        // מודל 2: מתאן
+        let methane = new ChemDoodle.ViewerCanvas('canvas_methane', 600, 350, viewerSpecs);
+        let methaneCDM = {"a": [{"l": "C", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": 1.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": -0.5, "z": 0.866}, {"l": "H", "y": 0.866, "x": -0.5, "z": -0.5}, {"l": "H", "y": -0.866, "x": -0.5, "z": -0.5}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}, {"b": 1, "e": 4, "o": 1}, {"b": 1, "e": 5, "o": 1}]};
+        methane.loadContent(methaneCDM.a, methaneCDM.b);
+
+        // מודל 3: חנקן
+        let nitrogen = new ChemDoodle.ViewerCanvas('canvas_nitrogen', 600, 350, viewerSpecs);
+        let nitrogenCDM = {"a": [{"l": "N", "y": 0.0, "x": -0.5, "z": 0.0}, {"l": "N", "y": 0.0, "x": 0.5, "z": 0.0}], "b": [{"b": 1, "e": 2, "o": 3}]}; 
+        nitrogen.loadContent(nitrogenCDM.a, nitrogenCDM.b);
+
+        // מורה לספרייה לצייר את כל הקנבסים
+        ChemDoodle.repaintAll();
+    }
     
-    // הגדרת מודל המתאן
-    let methane = new ChemDoodle.ViewerCanvas('canvas_methane', 400, 350);
-    methane.specs.backgroundColor = 'transparent';
-    methane.specs.set3DRepresentation('Ball and Stick'); 
-    methane.specs.stylesToDraw = 32; 
-    methane.specs.projection = 'perspective';
-    let methaneCDM = {"a": [{"l": "C", "y": 0.0, "x": 0.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": 1.0, "z": 0.0}, {"l": "H", "y": 0.0, "x": -0.5, "z": 0.866}, {"l": "H", "y": 0.866, "x": -0.5, "z": -0.5}, {"l": "H", "y": -0.866, "x": -0.5, "z": -0.5}], "b": [{"b": 1, "e": 2, "o": 1}, {"b": 1, "e": 3, "o": 1}, {"b": 1, "e": 4, "o": 1}, {"b": 1, "e": 5, "o": 1}]};
-    methane.loadContent(methaneCDM.a, methaneCDM.b);
+    // מפעיל את הפונקציה רק לאחר שכל הדף נטען
+    window.onload = init3DViewer;
 
-    // הגדרת מודל N2 (חנקן)
-    let nitrogen = new ChemDoodle.ViewerCanvas('canvas_nitrogen', 400, 350);
-    nitrogen.specs.backgroundColor = 'transparent';
-    nitrogen.specs.set3DRepresentation('Ball and Stick');
-    nitrogen.specs.stylesToDraw = 32;
-    nitrogen.specs.projection = 'perspective';
-    let nitrogenCDM = {"a": [{"l": "N", "y": 0.0, "x": -0.5, "z": 0.0}, {"l": "N", "y": 0.0, "x": 0.5, "z": 0.0}], "b": [{"b": 1, "e": 2, "o": 3}]}; // Bond order 3 (triple bond)
-    nitrogen.loadContent(nitrogenCDM.a, nitrogenCDM.b);
-
-    // מריץ את כל הציורים מחדש לאחר שהדף נטען
-    ChemDoodle.repaintAll();
 </script>
 </body>
 </html>
