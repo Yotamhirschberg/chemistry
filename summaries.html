@@ -1,282 +1,323 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>סיכומים ודגמים - כימיה בן גוריון</title>
-    <link rel="stylesheet" href="./style-v2.css"> 
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./3dmol-min.js"></script> 
-    
-    <style>
-        /* CSS ספציפי לעמוד הסיכומים */
-        .summary-section {
-            background-color: #ecf0f1;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            text-align: right;
-            border-right: 5px solid #e74c3c; 
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סיכומים ודגמים - כימיה בן גוריון</title>
+  <link rel="stylesheet" href="./style-v2.css" />
 
-        .summary-section h3 {
-            color: #2c3e50;
-            border-bottom: 1px solid #3498db;
-            padding-bottom: 5px;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        /* הגדרת גודל לקנבס 3Dmol */
-        .molecule-display {
-            width: 100%; 
-            max-width: 600px;
-            height: 350px; 
-            margin: 20px auto;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative; 
-            overflow: hidden; 
-        }
-        
-        /* סימון תחתון (Subscript) לנוסחאות כימיות */
-        .sub { vertical-align: sub; font-size: smaller; }
-        
-        /* עיצוב טבלאות ומונחים */
-        .mastery-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.95em;
-        }
+  <!-- אפשר להשאיר, אבל כבר לא חובה -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        .mastery-table th, .mastery-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-        }
+  <script src="./3dmol-min.js"></script>
 
-        .mastery-table th {
-            background-color: #34495e;
-            color: white;
-            font-weight: 700;
-        }
-.molecule-display {
-  position: relative;
-  touch-action: none;
-  background: white;
-}
+  <style>
+    .summary-section {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      text-align: right;
+      border-right: 5px solid #e74c3c;
+    }
 
-.mol-overlay {
-  position: absolute;
-  top: 10px;
-  left: 10px; /* כן, גם ב-RTL זה יותר دیکھ סטנדרטי */
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.85);
-  border: 1px solid rgba(0,0,0,0.08);
-  font-weight: 700;
-  font-size: 14px;
-  z-index: 5;
-  user-select: none;
-}
+    .summary-section h3 {
+      color: #2c3e50;
+      border-bottom: 1px solid #3498db;
+      padding-bottom: 5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
 
-        
-    </style>
+    /* קנבס */
+    .molecule-display {
+      width: 100%;
+      max-width: 600px;
+      height: 350px;
+      margin: 20px auto;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+      background: white;
+    }
+
+    .mol-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.90);
+      border: 1px solid rgba(0,0,0,0.10);
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 5;
+      user-select: none;
+    }
+
+    .sub { vertical-align: sub; font-size: smaller; }
+
+    .mastery-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.95em;
+    }
+
+    .mastery-table th, .mastery-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .mastery-table th {
+      background-color: #34495e;
+      color: white;
+      font-weight: 700;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="header">
+    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת <b>בן גוריון</b></h1>
+  </div>
 
-<div class="header">
-    <h1>אתר תרגול כימיה 👨‍🔬 - מכינת **בן גוריון**</h1>
-</div>
-
-<div class="nav-bar">
+  <div class="nav-bar">
     <a href="index.html" class="nav-btn">תרגול אדפטיבי (שאלות)</a>
     <a href="summaries.html" class="nav-btn active-tab">סיכומים ודגמים ויזואליים</a>
-</div>
+  </div>
 
-<div class="game-container">
+  <div class="game-container">
     <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
-    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. **לחץ וגרור על המולקולה כדי לסובב אותה.**</p>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. <b>לחץ וגרור על המולקולה כדי לסובב אותה.</b></p>
 
     <div class="summary-section">
-        <h3>1. מים (H<sub class="sub">2</sub>O): מבנה זוויתי וקוטביות</h3>
-        <p>למולקולת המים מבנה זוויתי (104.5°). מבנה א-סימטרי זה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
-        <div id="canvas_water" class="molecule-display"></div>
-    </div>
-    
-    <div class="summary-section">
-        <h3>2. מתאן (CH<sub class="sub">4</sub>): מבנה טטראדרי ואי-קוטביות</h3>
-        <p>מבנה טטראדרי סימטרי (109.5°). מומנטי הדיפול מתבטלים והמולקולה כולה אינה קוטבית.</p>
-        <div id="canvas_methane" class="molecule-display"></div>
+      <h3>1. מים (H<sub class="sub">2</sub>O): מבנה זוויתי וקוטביות</h3>
+      <p>למולקולת המים מבנה זוויתי (104.5°). מבנה א-סימטרי זה הופך אותה לקוטבית ויוצר קשרי מימן חזקים.</p>
+      <div id="canvas_water" class="molecule-display"></div>
     </div>
 
     <div class="summary-section">
-        <h3>3. אמוניה (NH<sub class="sub">3</sub>): פירמידה משולשת</h3>
-        <p>למולקולה זו גיאומטריה של פירמידה משולשת. זוג אלקטרונים לא-קושרים דוחף את קשרי המימן מטה.</p>
-        <div id="canvas_ammonia" class="molecule-display"></div>
-    </div>
-    
-    <div class="summary-section">
-        <h3>4. פחמן דו-חמצני (CO<sub class="sub">2</sub>): מבנה קווי</h3>
-        <p>למולקולה מבנה קווי (180°). למרות קשרים קוטביים, המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית.</p>
-        <div id="canvas_co2" class="molecule-display"></div>
+      <h3>2. מתאן (CH<sub class="sub">4</sub>): מבנה טטראדרי ואי-קוטביות</h3>
+      <p>מבנה טטראדרי סימטרי (109.5°). מומנטי הדיפול מתבטלים והמולקולה כולה אינה קוטבית.</p>
+      <div id="canvas_methane" class="molecule-display"></div>
     </div>
 
     <div class="summary-section">
-        <h3>5. מימן ציאנידי (HCN): מבנה קווי עם קשר משולש</h3>
-        <p>מולקולה קווית (180°) קוטבית מאוד, המכילה קשר משולש בין הפחמן לחנקן.</p>
-        <div id="canvas_hcn" class="molecule-display"></div>
+      <h3>3. אמוניה (NH<sub class="sub">3</sub>): פירמידה משולשת</h3>
+      <p>למולקולה זו גיאומטריה של פירמידה משולשת. זוג אלקטרונים לא-קושרים דוחף את קשרי המימן מטה.</p>
+      <div id="canvas_ammonia" class="molecule-display"></div>
     </div>
 
     <div class="summary-section">
-        <h3>6. בורון טריפלואוריד (BF<sub class="sub">3</sub>): משולש מישורי</h3>
-        <p>מולקולה סימטרית ואי-קוטבית לחלוטין. שלושה אטומים המחוברים ב-120° לאטום מרכזי (בורון).</p>
-        <div id="canvas_bf3" class="molecule-display"></div>
+      <h3>4. פחמן דו-חמצני (CO<sub class="sub">2</sub>): מבנה קווי</h3>
+      <p>למולקולה מבנה קווי (180°). למרות קשרים קוטביים, המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית.</p>
+      <div id="canvas_co2" class="molecule-display"></div>
     </div>
-    
+
     <div class="summary-section">
-        <h3>7. מילון מונחים מרכזי</h3>
-        <p>טבלה זו מסכמת את הגיאומטריות המרחביות העיקריות והתכונות הקשורות.</p>
-        <table class="mastery-table">
-            <thead>
-                <tr>
-                    <th>מבנה גיאומטרי</th>
-                    <th>אזורים דוחים</th>
-                    <th>זוגות לא-קושרים</th>
-                    <th>זווית אופיינית</th>
-                    <th>קוטביות (דוגמה)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית (CO<sub class="sub">2</sub>)</td></tr>
-                <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית (BF<sub class="sub">3</sub>)</td></tr>
-                <tr><td>זוויתית</td><td>3</td><td>1</td><td>< 120°</td><td>קוטבית (SO<sub class="sub">2</sub>)</td></tr>
-                <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית (CH<sub class="sub">4</sub>)</td></tr>
-                <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית (NH<sub class="sub">3</sub>)</td></tr>
-                <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית (H<sub class="sub">2</sub>O)</td></tr>
-            </tbody>
-        </table>
+      <h3>5. מימן ציאנידי (HCN): מבנה קווי עם קשר משולש</h3>
+      <p>מולקולה קווית (180°) קוטבית מאוד, המכילה קשר משולש בין הפחמן לחנקן.</p>
+      <div id="canvas_hcn" class="molecule-display"></div>
     </div>
 
-</div>
+    <div class="summary-section">
+      <h3>6. בורון טריפלואוריד (BF<sub class="sub">3</sub>): משולש מישורי</h3>
+      <p>מולקולה סימטרית ואי-קוטבית לחלוטין. שלושה אטומים המחוברים ב-120° לאטום מרכזי (בורון).</p>
+      <div id="canvas_bf3" class="molecule-display"></div>
+    </div>
 
-<script>
-  function ensureOverlay(el, text) {
-    let o = el.querySelector(".mol-overlay");
-    if (!o) {
-      o = document.createElement("div");
-      o.className = "mol-overlay";
-      el.appendChild(o);
-    }
-    o.textContent = text || "";
-    return o;
-  }
+    <div class="summary-section">
+      <h3>7. מילון מונחים מרכזי</h3>
+      <p>טבלה זו מסכמת את הגיאומטריות המרחביות העיקריות והתכונות הקשורות.</p>
+      <table class="mastery-table">
+        <thead>
+          <tr>
+            <th>מבנה גיאומטרי</th>
+            <th>אזורים דוחים</th>
+            <th>זוגות לא-קושרים</th>
+            <th>זווית אופיינית</th>
+            <th>קוטביות (דוגמה)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית (CO<sub class="sub">2</sub>)</td></tr>
+          <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית (BF<sub class="sub">3</sub>)</td></tr>
+          <tr><td>זוויתית</td><td>3</td><td>1</td><td>&lt; 120°</td><td>קוטבית (SO<sub class="sub">2</sub>)</td></tr>
+          <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית (CH<sub class="sub">4</sub>)</td></tr>
+          <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית (NH<sub class="sub">3</sub>)</td></tr>
+          <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית (H<sub class="sub">2</sub>O)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  async function loadText(path) {
-    const res = await fetch(path, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
-    return await res.text();
-  }
-
-  function angleDeg(a, b, c) {
-    const v1 = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
-    const v2 = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
-    const dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
-    const n1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
-    const n2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
-    const cos = Math.max(-1, Math.min(1, dot/(n1*n2)));
-    return Math.acos(cos) * 180/Math.PI;
-  }
-
-  async function initWater() {
-    const el = document.getElementById("canvas_water");
-    if (!el) return;
-
-    const overlay = ensureOverlay(el, "טוען מודל…");
-
-    const pdb = await loadText("./water.pdb");
-console.log("water.pdb loaded:\n", pdb);
-
-    const viewer = $3Dmol.createViewer(el, {
-      backgroundColor: "white",
-      defaultcolors: $3Dmol.rasmolColors
-    });
-
-    const model = viewer.addModel(pdb, "pdb");
-
-    // יש לך CONECT, אבל אם משהו חסר — נוודא קשרים בכל מקרה
-    try { model.assignBonds(); } catch (e) {}
-
-    // --- בסיס: לכל האטומים גם כדורים וגם מקלות (ככה לא “נעלמים” H) ---
-    viewer.setStyle({}, {
-      stick: { radius: 0.22, multipleBonds: true },  // קשרים מודגשים וישרים
-      sphere: { scale: 0.34 }                        // אטומים ברורים
-    });
-
-    // --- הדגשה לימודית: O גדול יותר, H קטן יותר ---
-    viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.46 } });
-    viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 } });
-
-    // זיהוי האטומים לפי SERIAL מה-PDB שלך: O=1, H1=2, H2=3
-    const atoms = model.selectedAtoms({});
-    const bySerial = new Map(atoms.map(a => [a.serial, a]));
-    const O  = bySerial.get(1);
-    const H1 = bySerial.get(2);
-    const H2 = bySerial.get(3);
-
-    let angleText = "";
-    if (O && H1 && H2) {
-      const ang = angleDeg(H1, O, H2);
-      angleText = ` • זווית H–O–H: ${ang.toFixed(1)}°`;
+  <script>
+    function ensureOverlay(el, text) {
+      let o = el.querySelector(".mol-overlay");
+      if (!o) {
+        o = document.createElement("div");
+        o.className = "mol-overlay";
+        el.appendChild(o);
+      }
+      o.textContent = text || "";
+      return o;
     }
 
-    overlay.textContent = `צורה: זוויתית (Bent)${angleText}`;
+    async function loadText(path) {
+      const res = await fetch(path, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
+      return await res.text();
+    }
 
-    viewer.zoomTo();
-    viewer.render();
+    function angleDeg(a, b, c) {
+      const v1 = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+      const v2 = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
+      const dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+      const n1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
+      const n2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
+      const cos = Math.max(-1, Math.min(1, dot/(n1*n2)));
+      return Math.acos(cos) * 180/Math.PI;
+    }
 
-    // סיבוב חלק 360° סביב ציר "מאוזן" (אצל רוב האנשים: ציר Y נותן “סיבוב סביב עצמו”)
-    // אם אתה רוצה “גלגול” ממש (ציר X), החלף ל- viewer.spin("x", 0.45)
-    viewer.spin("y", 0.45);
+    function attachControls(el, viewer, { spinAxis = "y", spinSpeed = 0.45 } = {}) {
+      viewer.spin(spinAxis, spinSpeed);
 
-    // --- זום עדין ונשלט (בלי “קפיצה”) ---
-    el.addEventListener("wheel", (e) => {
-      e.preventDefault();
+      // זום עדין ונשלט
+      el.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const dy = Math.max(-120, Math.min(120, e.deltaY));
+        const strength = Math.abs(dy) / 120;     // 0..1
+        const step = 1 + (0.05 * strength);      // מקס' 5% לכל גלגול
+        const zoomFactor = dy > 0 ? step : (1 / step);
+        viewer.zoom(zoomFactor);
+        viewer.render();
+      }, { passive: false });
 
-      // נרמל עוצמה כדי לא לקפוץ גם בעכברים "מהירים"
-      const dy = Math.max(-120, Math.min(120, e.deltaY));
-      const strength = Math.abs(dy) / 120; // 0..1
-      const step = 1 + (0.06 * strength);  // עדין מאוד: 6% מקס'
+      // עצירת סיבוב כשאתה מתחיל אינטראקציה
+      const stopSpin = () => viewer.spin(false);
+      el.addEventListener("mousedown", stopSpin);
+      el.addEventListener("touchstart", stopSpin, { passive: true });
 
-      const zoomFactor = dy > 0 ? step : (1 / step);
-      viewer.zoom(zoomFactor);
+      // Resize יציב
+      const ro = new ResizeObserver(() => {
+        viewer.resize();
+        viewer.render();
+      });
+      ro.observe(el);
+    }
+
+    async function initGenericMolecule({ elId, pdbFile, overlayText }) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+
+      const overlay = ensureOverlay(el, "טוען…");
+
+      const pdb = await loadText("./" + pdbFile);
+
+      const viewer = $3Dmol.createViewer(el, {
+        backgroundColor: "white",
+        defaultcolors: $3Dmol.rasmolColors
+      });
+
+      const model = viewer.addModel(pdb, "pdb");
+      try { model.assignBonds(); } catch (e) {}
+
+      // ✅ סטייל שלא נדרס: מגדירים לכל סוג אטום גם sphere וגם stick
+      // (ככה H לא נעלמים, וקשרים תמיד נשארים)
+      viewer.setStyle({ elem: "H" }, {
+        sphere: { scale: 0.28 },
+        stick: { radius: 0.18 }
+      });
+
+      // לכל השאר (C/N/O/F/B וכו')
+      viewer.setStyle({ not: { elem: "H" } }, {
+        sphere: { scale: 0.40 },
+        stick: { radius: 0.22, multipleBonds: true }
+      });
+
+      // שדרוג קטן: חמצן קצת יותר גדול (רק אם קיים)
+      viewer.setStyle({ elem: "O" }, {
+        sphere: { scale: 0.46 },
+        stick: { radius: 0.22, multipleBonds: true }
+      });
+
+      overlay.textContent = overlayText;
+
+      viewer.zoomTo();
       viewer.render();
-    }, { passive: false });
 
-    // כשאתה גורר כדי לסובב — נעצור spin (אחרת זה מרגיש “נלחם”)
-    const stopSpin = () => viewer.spin(false);
-    el.addEventListener("mousedown", stopSpin);
-    el.addEventListener("touchstart", stopSpin, { passive: true });
+      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+      return { viewer, model };
+    }
 
-    // resize יציב
-    const ro = new ResizeObserver(() => {
-      viewer.resize();
-      viewer.render();
-    });
-    ro.observe(el);
-  }
-
-  window.addEventListener("DOMContentLoaded", () => {
-    initWater().catch(err => {
-      console.error(err);
+    async function initWater() {
       const el = document.getElementById("canvas_water");
-      if (el) el.innerHTML = `<div style="color:red;text-align:center;padding-top:140px">שגיאת טעינה (מים)</div>`;
-    });
-  });
-</script>
+      if (!el) return;
 
+      const overlay = ensureOverlay(el, "טוען…");
+      const pdb = await loadText("./water.pdb");
+
+      const viewer = $3Dmol.createViewer(el, {
+        backgroundColor: "white",
+        defaultcolors: $3Dmol.rasmolColors
+      });
+
+      const model = viewer.addModel(pdb, "pdb");
+      try { model.assignBonds(); } catch (e) {}
+
+      // ✅ כאן הטריק: אין setStyle כללי ואז דריסה חלקית.
+      // מגדירים סטייל מלא לכל קבוצה:
+      viewer.setStyle({ elem: "H" }, {
+        sphere: { scale: 0.28 },
+        stick: { radius: 0.18 }
+      });
+
+      viewer.setStyle({ elem: "O" }, {
+        sphere: { scale: 0.46 },
+        stick: { radius: 0.22, multipleBonds: true }
+      });
+
+      // חישוב זווית לפי SERIALים: 1=O, 2=H1, 3=H2
+      const atoms = model.selectedAtoms({});
+      const bySerial = new Map(atoms.map(a => [a.serial, a]));
+      const O  = bySerial.get(1);
+      const H1 = bySerial.get(2);
+      const H2 = bySerial.get(3);
+
+      let angleText = "";
+      if (O && H1 && H2) {
+        const ang = angleDeg(H1, O, H2);
+        angleText = ` • זווית H–O–H: ${ang.toFixed(1)}°`;
+      }
+
+      overlay.textContent = `צורה: זוויתית (Bent)${angleText}`;
+
+      viewer.zoomTo();
+      viewer.render();
+
+      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // מים – עם חישוב זווית
+      initWater().catch(err => {
+        console.error(err);
+        const el = document.getElementById("canvas_water");
+        if (el) el.innerHTML = `<div style="color:red;text-align:center;padding-top:140px">שגיאת טעינה (מים)</div>`;
+      });
+
+      // שאר המודלים – תצוגה איכותית בסיסית + overlay צורה
+      initGenericMolecule({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
+      initGenericMolecule({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
+      initGenericMolecule({ elId: "canvas_co2", pdbFile: "co2.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
+      initGenericMolecule({ elId: "canvas_hcn", pdbFile: "hcn.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
+      initGenericMolecule({ elId: "canvas_bf3", pdbFile: "bf3.pdb", overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
+    });
+  </script>
 </body>
 </html>
