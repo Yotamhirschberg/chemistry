@@ -259,6 +259,76 @@
       const el = document.getElementById("canvas_water");
       if (!el) return;
 
+async function initCO2() {
+  const el = document.getElementById("canvas_co2");
+  if (!el) return;
+
+  const overlay = ensureOverlay(el, "טוען…");
+  const pdb = await loadText("./co2.pdb");
+
+  const viewer = $3Dmol.createViewer(el, {
+    backgroundColor: "white",
+    defaultcolors: $3Dmol.rasmolColors
+  });
+
+  const model = viewer.addModel(pdb, "pdb");
+  try { model.assignBonds(); } catch (e) {}
+
+  // אטומים בלבד (הקשרים נצייר ידנית)
+  viewer.setStyle({}, { sphere: { scale: 0.42 } });
+  viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.48 } });
+  viewer.setStyle({ elem: "C" }, { sphere: { scale: 0.42 } });
+
+  const atoms = model.selectedAtoms({});
+  const C = atoms.find(a => a.elem === "C");
+  const Os = atoms.filter(a => a.elem === "O");
+
+  if (!C || Os.length < 2) {
+    overlay.textContent = "שגיאה בזיהוי האטומים";
+    viewer.zoomTo(); viewer.render();
+    attachControls(el, viewer);
+    return;
+  }
+
+  // וקטורים
+  const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
+  const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+  const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
+  const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+  const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
+  const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
+
+  function drawDoubleBond(a,b){
+    const u = unit(sub(b,a));
+    let perp = cross(u,{x:0,y:0,z:1});
+    if(norm(perp)<1e-6) perp=cross(u,{x:0,y:1,z:0});
+    perp = unit(perp);
+
+    const offset = 0.14;
+    const radius = 0.08;
+
+    viewer.addCylinder({
+      start: add(a,mul(perp, offset)),
+      end:   add(b,mul(perp, offset)),
+      radius
+    });
+    viewer.addCylinder({
+      start: add(a,mul(perp,-offset)),
+      end:   add(b,mul(perp,-offset)),
+      radius
+    });
+  }
+
+  drawDoubleBond(C, Os[0]);
+  drawDoubleBond(C, Os[1]);
+
+  overlay.textContent = "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)";
+  viewer.zoomTo();
+  viewer.render();
+  attachControls(el, viewer);
+}
+
+      
       const overlay = ensureOverlay(el, "טוען…");
       const pdb = await loadText("./water.pdb");
 
@@ -314,7 +384,7 @@
       // שאר המודלים – תצוגה איכותית בסיסית + overlay צורה
       initGenericMolecule({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
       initGenericMolecule({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
-      initGenericMolecule({ elId: "canvas_co2", pdbFile: "co2.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
+initCO2().catch(console.error);
       initGenericMolecule({ elId: "canvas_hcn", pdbFile: "hcn.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
       initGenericMolecule({ elId: "canvas_bf3", pdbFile: "bf3.pdb", overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
     });
