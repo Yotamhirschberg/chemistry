@@ -185,23 +185,20 @@
     function attachControls(el, viewer, { spinAxis = "y", spinSpeed = 0.45 } = {}) {
       viewer.spin(spinAxis, spinSpeed);
 
-      // זום עדין ונשלט
       el.addEventListener("wheel", (e) => {
         e.preventDefault();
         const dy = Math.max(-120, Math.min(120, e.deltaY));
-        const strength = Math.abs(dy) / 120;     // 0..1
-        const step = 1 + (0.05 * strength);      // מקס' 5% לכל גלגול
+        const strength = Math.abs(dy) / 120;
+        const step = 1 + (0.05 * strength);
         const zoomFactor = dy > 0 ? step : (1 / step);
         viewer.zoom(zoomFactor);
         viewer.render();
       }, { passive: false });
 
-      // עצירת סיבוב בעת אינטראקציה
       const stopSpin = () => viewer.spin(false);
       el.addEventListener("mousedown", stopSpin);
       el.addEventListener("touchstart", stopSpin, { passive: true });
 
-      // resize יציב
       const ro = new ResizeObserver(() => {
         viewer.resize();
         viewer.render();
@@ -209,24 +206,26 @@
       ro.observe(el);
     }
 
+    // ✅ Ball&Stick יציב: סטייל בסיס לכל האטומים, ואז Overrides בלי למחוק stick
     function applyBallStick(viewer, model) {
       try { model.assignBonds(); } catch (e) {}
 
-      // לא לדרוס סטיילים: מגדירים לכל קבוצה גם sphere וגם stick
+      // בסיס לכולם
+      viewer.setStyle({}, {
+        stick: { radius: 0.22, multipleBonds: true },
+        sphere: { scale: 0.38 }
+      });
+
+      // H
       viewer.setStyle({ elem: "H" }, {
-        sphere: { scale: 0.28 },
-        stick: { radius: 0.18 }
+        stick: { radius: 0.18, multipleBonds: true },
+        sphere: { scale: 0.28 }
       });
 
-      viewer.setStyle({ not: { elem: "H" } }, {
-        sphere: { scale: 0.40 },
-        stick: { radius: 0.22, multipleBonds: true }
-      });
-
-      // שדרוג קטן: חמצן
+      // O
       viewer.setStyle({ elem: "O" }, {
-        sphere: { scale: 0.46 },
-        stick: { radius: 0.22, multipleBonds: true }
+        stick: { radius: 0.22, multipleBonds: true },
+        sphere: { scale: 0.46 }
       });
     }
 
@@ -266,11 +265,10 @@
       const model = viewer.addModel(pdb, "pdb");
       try { model.assignBonds(); } catch (e) {}
 
-      // סטייל מלא לכל סוג אטום
-      viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 }, stick: { radius: 0.18 } });
+      // מים: סטייל לשני סוגים בלבד, אבל כולל stick (ככה רואים קשרים)
+      viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 }, stick: { radius: 0.18, multipleBonds: true } });
       viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.46 }, stick: { radius: 0.22, multipleBonds: true } });
 
-      // זווית לפי SERIALים: 1=O, 2=H1, 3=H2
       const atoms = model.selectedAtoms({});
       const bySerial = new Map(atoms.map(a => [a.serial, a]));
       const O  = bySerial.get(1);
@@ -304,16 +302,26 @@
       const model = viewer.addModel(pdb, "pdb");
       try { model.assignBonds(); } catch (e) {}
 
-      // כדורים בלבד (את הקשרים הכפולים נצייר ידנית)
-      viewer.setStyle({}, { sphere: { scale: 0.42 } });
-      viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.48 } });
-      viewer.setStyle({ elem: "C" }, { sphere: { scale: 0.42 } });
+      // ✅ קשר רגיל כ-fallback (שלא יקרה מצב שאין בכלל קווים)
+      viewer.setStyle({}, {
+        stick: { radius: 0.18, multipleBonds: true },
+        sphere: { scale: 0.40 }
+      });
+
+      viewer.setStyle({ elem: "O" }, {
+        stick: { radius: 0.18, multipleBonds: true },
+        sphere: { scale: 0.48 }
+      });
+
+      viewer.setStyle({ elem: "C" }, {
+        stick: { radius: 0.18, multipleBonds: true },
+        sphere: { scale: 0.42 }
+      });
 
       const atoms = model.selectedAtoms({});
       const C = atoms.find(a => a.elem === "C");
       const Os = atoms.filter(a => a.elem === "O");
 
-      // וקטורים
       const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
       const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
       const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
@@ -328,10 +336,11 @@
         perp = unit(perp);
 
         const offset = 0.14;
-        const radius = 0.08;
+        const radius = 0.11;          // ✅ עבה יותר
+        const color  = 0x444444;      // ✅ צבע ברור
 
-        viewer.addCylinder({ start: add(a,mul(perp, offset)), end: add(b,mul(perp, offset)), radius });
-        viewer.addCylinder({ start: add(a,mul(perp,-offset)), end: add(b,mul(perp,-offset)), radius });
+        viewer.addCylinder({ start: add(a,mul(perp,  offset)), end: add(b,mul(perp,  offset)), radius, color });
+        viewer.addCylinder({ start: add(a,mul(perp, -offset)), end: add(b,mul(perp, -offset)), radius, color });
       }
 
       if (C && Os.length >= 2) {
