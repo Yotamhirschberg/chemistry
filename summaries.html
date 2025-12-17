@@ -198,6 +198,7 @@
     const overlay = ensureOverlay(el, "טוען מודל…");
 
     const pdb = await loadText("./water.pdb");
+console.log("water.pdb loaded:\n", pdb);
 
     const viewer = $3Dmol.createViewer(el, {
       backgroundColor: "white",
