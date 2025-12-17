@@ -6,9 +6,7 @@
   <title>סיכומים ודגמים - כימיה בן גוריון</title>
   <link rel="stylesheet" href="./style-v2.css" />
 
-  <!-- אפשר להשאיר, אבל כבר לא חובה -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+  <!-- 3Dmol -->
   <script src="./3dmol-min.js"></script>
 
   <style>
@@ -29,7 +27,6 @@
       margin-bottom: 15px;
     }
 
-    /* קנבס */
     .molecule-display {
       width: 100%;
       max-width: 600px;
@@ -52,7 +49,7 @@
       border-radius: 10px;
       background: rgba(255,255,255,0.90);
       border: 1px solid rgba(0,0,0,0.10);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
       z-index: 5;
       user-select: none;
@@ -82,6 +79,7 @@
 </head>
 
 <body>
+
   <div class="header">
     <h1>אתר תרגול כימיה 👨‍🔬 - מכינת <b>בן גוריון</b></h1>
   </div>
@@ -198,12 +196,12 @@
         viewer.render();
       }, { passive: false });
 
-      // עצירת סיבוב כשאתה מתחיל אינטראקציה
+      // עצירת סיבוב בעת אינטראקציה
       const stopSpin = () => viewer.spin(false);
       el.addEventListener("mousedown", stopSpin);
       el.addEventListener("touchstart", stopSpin, { passive: true });
 
-      // Resize יציב
+      // resize יציב
       const ro = new ResizeObserver(() => {
         viewer.resize();
         viewer.render();
@@ -211,12 +209,32 @@
       ro.observe(el);
     }
 
-    async function initGenericMolecule({ elId, pdbFile, overlayText }) {
+    function applyBallStick(viewer, model) {
+      try { model.assignBonds(); } catch (e) {}
+
+      // לא לדרוס סטיילים: מגדירים לכל קבוצה גם sphere וגם stick
+      viewer.setStyle({ elem: "H" }, {
+        sphere: { scale: 0.28 },
+        stick: { radius: 0.18 }
+      });
+
+      viewer.setStyle({ not: { elem: "H" } }, {
+        sphere: { scale: 0.40 },
+        stick: { radius: 0.22, multipleBonds: true }
+      });
+
+      // שדרוג קטן: חמצן
+      viewer.setStyle({ elem: "O" }, {
+        sphere: { scale: 0.46 },
+        stick: { radius: 0.22, multipleBonds: true }
+      });
+    }
+
+    async function initGeneric({ elId, pdbFile, overlayText }) {
       const el = document.getElementById(elId);
       if (!el) return;
 
-      const overlay = ensureOverlay(el, "טוען…");
-
+      ensureOverlay(el, "טוען…");
       const pdb = await loadText("./" + pdbFile);
 
       const viewer = $3Dmol.createViewer(el, {
@@ -225,111 +243,19 @@
       });
 
       const model = viewer.addModel(pdb, "pdb");
-      try { model.assignBonds(); } catch (e) {}
+      applyBallStick(viewer, model);
 
-      // ✅ סטייל שלא נדרס: מגדירים לכל סוג אטום גם sphere וגם stick
-      // (ככה H לא נעלמים, וקשרים תמיד נשארים)
-      viewer.setStyle({ elem: "H" }, {
-        sphere: { scale: 0.28 },
-        stick: { radius: 0.18 }
-      });
-
-      // לכל השאר (C/N/O/F/B וכו')
-      viewer.setStyle({ not: { elem: "H" } }, {
-        sphere: { scale: 0.40 },
-        stick: { radius: 0.22, multipleBonds: true }
-      });
-
-      // שדרוג קטן: חמצן קצת יותר גדול (רק אם קיים)
-      viewer.setStyle({ elem: "O" }, {
-        sphere: { scale: 0.46 },
-        stick: { radius: 0.22, multipleBonds: true }
-      });
-
-      overlay.textContent = overlayText;
-
+      ensureOverlay(el, overlayText);
       viewer.zoomTo();
       viewer.render();
-
       attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
-      return { viewer, model };
     }
 
     async function initWater() {
       const el = document.getElementById("canvas_water");
       if (!el) return;
 
-async function initCO2() {
-  const el = document.getElementById("canvas_co2");
-  if (!el) return;
-
-  const overlay = ensureOverlay(el, "טוען…");
-  const pdb = await loadText("./co2.pdb");
-
-  const viewer = $3Dmol.createViewer(el, {
-    backgroundColor: "white",
-    defaultcolors: $3Dmol.rasmolColors
-  });
-
-  const model = viewer.addModel(pdb, "pdb");
-  try { model.assignBonds(); } catch (e) {}
-
-  // אטומים בלבד (הקשרים נצייר ידנית)
-  viewer.setStyle({}, { sphere: { scale: 0.42 } });
-  viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.48 } });
-  viewer.setStyle({ elem: "C" }, { sphere: { scale: 0.42 } });
-
-  const atoms = model.selectedAtoms({});
-  const C = atoms.find(a => a.elem === "C");
-  const Os = atoms.filter(a => a.elem === "O");
-
-  if (!C || Os.length < 2) {
-    overlay.textContent = "שגיאה בזיהוי האטומים";
-    viewer.zoomTo(); viewer.render();
-    attachControls(el, viewer);
-    return;
-  }
-
-  // וקטורים
-  const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
-  const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
-  const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
-  const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
-  const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
-  const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
-
-  function drawDoubleBond(a,b){
-    const u = unit(sub(b,a));
-    let perp = cross(u,{x:0,y:0,z:1});
-    if(norm(perp)<1e-6) perp=cross(u,{x:0,y:1,z:0});
-    perp = unit(perp);
-
-    const offset = 0.14;
-    const radius = 0.08;
-
-    viewer.addCylinder({
-      start: add(a,mul(perp, offset)),
-      end:   add(b,mul(perp, offset)),
-      radius
-    });
-    viewer.addCylinder({
-      start: add(a,mul(perp,-offset)),
-      end:   add(b,mul(perp,-offset)),
-      radius
-    });
-  }
-
-  drawDoubleBond(C, Os[0]);
-  drawDoubleBond(C, Os[1]);
-
-  overlay.textContent = "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)";
-  viewer.zoomTo();
-  viewer.render();
-  attachControls(el, viewer);
-}
-
-      
-      const overlay = ensureOverlay(el, "טוען…");
+      ensureOverlay(el, "טוען…");
       const pdb = await loadText("./water.pdb");
 
       const viewer = $3Dmol.createViewer(el, {
@@ -340,19 +266,11 @@ async function initCO2() {
       const model = viewer.addModel(pdb, "pdb");
       try { model.assignBonds(); } catch (e) {}
 
-      // ✅ כאן הטריק: אין setStyle כללי ואז דריסה חלקית.
-      // מגדירים סטייל מלא לכל קבוצה:
-      viewer.setStyle({ elem: "H" }, {
-        sphere: { scale: 0.28 },
-        stick: { radius: 0.18 }
-      });
+      // סטייל מלא לכל סוג אטום
+      viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 }, stick: { radius: 0.18 } });
+      viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.46 }, stick: { radius: 0.22, multipleBonds: true } });
 
-      viewer.setStyle({ elem: "O" }, {
-        sphere: { scale: 0.46 },
-        stick: { radius: 0.22, multipleBonds: true }
-      });
-
-      // חישוב זווית לפי SERIALים: 1=O, 2=H1, 3=H2
+      // זווית לפי SERIALים: 1=O, 2=H1, 3=H2
       const atoms = model.selectedAtoms({});
       const bySerial = new Map(atoms.map(a => [a.serial, a]));
       const O  = bySerial.get(1);
@@ -365,28 +283,78 @@ async function initCO2() {
         angleText = ` • זווית H–O–H: ${ang.toFixed(1)}°`;
       }
 
-      overlay.textContent = `צורה: זוויתית (Bent)${angleText}`;
+      ensureOverlay(el, `צורה: זוויתית (Bent)${angleText}`);
+      viewer.zoomTo();
+      viewer.render();
+      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+    }
+
+    async function initCO2() {
+      const el = document.getElementById("canvas_co2");
+      if (!el) return;
+
+      ensureOverlay(el, "טוען…");
+      const pdb = await loadText("./co2.pdb");
+
+      const viewer = $3Dmol.createViewer(el, {
+        backgroundColor: "white",
+        defaultcolors: $3Dmol.rasmolColors
+      });
+
+      const model = viewer.addModel(pdb, "pdb");
+      try { model.assignBonds(); } catch (e) {}
+
+      // כדורים בלבד (את הקשרים הכפולים נצייר ידנית)
+      viewer.setStyle({}, { sphere: { scale: 0.42 } });
+      viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.48 } });
+      viewer.setStyle({ elem: "C" }, { sphere: { scale: 0.42 } });
+
+      const atoms = model.selectedAtoms({});
+      const C = atoms.find(a => a.elem === "C");
+      const Os = atoms.filter(a => a.elem === "O");
+
+      // וקטורים
+      const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
+      const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+      const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
+      const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+      const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
+      const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
+
+      function drawDoubleBond(a,b){
+        const u = unit(sub(b,a));
+        let perp = cross(u,{x:0,y:0,z:1});
+        if(norm(perp)<1e-6) perp=cross(u,{x:0,y:1,z:0});
+        perp = unit(perp);
+
+        const offset = 0.14;
+        const radius = 0.08;
+
+        viewer.addCylinder({ start: add(a,mul(perp, offset)), end: add(b,mul(perp, offset)), radius });
+        viewer.addCylinder({ start: add(a,mul(perp,-offset)), end: add(b,mul(perp,-offset)), radius });
+      }
+
+      if (C && Os.length >= 2) {
+        drawDoubleBond(C, Os[0]);
+        drawDoubleBond(C, Os[1]);
+        ensureOverlay(el, "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)");
+      } else {
+        ensureOverlay(el, "שגיאה בזיהוי האטומים לציור קשרים כפולים");
+      }
 
       viewer.zoomTo();
       viewer.render();
-
       attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      // מים – עם חישוב זווית
-      initWater().catch(err => {
-        console.error(err);
-        const el = document.getElementById("canvas_water");
-        if (el) el.innerHTML = `<div style="color:red;text-align:center;padding-top:140px">שגיאת טעינה (מים)</div>`;
-      });
+      initWater().catch(console.error);
+      initCO2().catch(console.error);
 
-      // שאר המודלים – תצוגה איכותית בסיסית + overlay צורה
-      initGenericMolecule({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
-      initGenericMolecule({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
-initCO2().catch(console.error);
-      initGenericMolecule({ elId: "canvas_hcn", pdbFile: "hcn.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
-      initGenericMolecule({ elId: "canvas_bf3", pdbFile: "bf3.pdb", overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
+      initGeneric({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
+      initGeneric({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
+      initGeneric({ elId: "canvas_hcn", pdbFile: "hcn.pdb", overlayText: "צורה: קווית (Linear)" }).catch(console.error);
+      initGeneric({ elId: "canvas_bf3", pdbFile: "bf3.pdb", overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
     });
   </script>
 </body>
