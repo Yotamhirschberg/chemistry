@@ -8,15 +8,11 @@
   <script src="./3dmol-min.js"></script>
 
   <style>
-    .summary-section{
-      background-color:#ecf0f1;padding:20px;border-radius:8px;margin-bottom:30px;text-align:right;border-right:5px solid #e74c3c;
-    }
-    .summary-section h3{
-      color:#2c3e50;border-bottom:1px solid #3498db;padding-bottom:5px;margin-top:0;margin-bottom:15px;
-    }
+    .summary-section{background:#ecf0f1;padding:20px;border-radius:8px;margin-bottom:30px;text-align:right;border-right:5px solid #e74c3c;}
+    .summary-section h3{color:#2c3e50;border-bottom:1px solid #3498db;padding-bottom:5px;margin:0 0 15px;}
     .molecule-display{
       width:100%;max-width:600px;height:350px;margin:20px auto;border:2px solid #3498db;border-radius:8px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);position:relative;overflow:hidden;touch-action:none;background:white;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);position:relative;overflow:hidden;touch-action:none;background:#fff;
     }
     .mol-overlay{
       position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.90);
@@ -25,7 +21,7 @@
     .sub{vertical-align:sub;font-size:smaller;}
     .mastery-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:0.95em;}
     .mastery-table th,.mastery-table td{border:1px solid #ddd;padding:12px;text-align:center;}
-    .mastery-table th{background-color:#34495e;color:white;font-weight:700;}
+    .mastery-table th{background:#34495e;color:#fff;font-weight:700;}
   </style>
 </head>
 
@@ -85,11 +81,7 @@
       <table class="mastery-table">
         <thead>
           <tr>
-            <th>מבנה גיאומטרי</th>
-            <th>אזורים דוחים</th>
-            <th>זוגות לא-קושרים</th>
-            <th>זווית אופיינית</th>
-            <th>קוטביות (דוגמה)</th>
+            <th>מבנה גיאומטרי</th><th>אזורים דוחים</th><th>זוגות לא-קושרים</th><th>זווית אופיינית</th><th>קוטביות (דוגמה)</th>
           </tr>
         </thead>
         <tbody>
@@ -104,234 +96,272 @@
     </div>
   </div>
 
-  <script>
-    // ===== UI helpers =====
-    function ensureOverlay(el, text) {
-      let o = el.querySelector(".mol-overlay");
-      if (!o) {
-        o = document.createElement("div");
-        o.className = "mol-overlay";
-        el.appendChild(o);
+<script>
+/* =========================
+   3D Settings (Atoms/Bonds)
+   ========================= */
+
+// רדיוסים ויזואליים (Å) — כדי שיראו “אמיתי” וגם שהקשרים לא ייבלעו
+const ATOM_RADIUS = {
+  H: 0.23,
+  C: 0.33,
+  N: 0.32,
+  O: 0.31,
+  F: 0.30,
+  B: 0.34
+};
+
+// צבעים לימודיים קלאסיים
+const ATOM_COLOR = {
+  H: 0xFFFFFF,      // לבן
+  C: 0x9E9E9E,      // אפור
+  N: 0x3F51B5,      // כחול
+  O: 0xE53935,      // אדום
+  F: 0x43A047,      // ירוק
+  B: 0xF48FB1       // ורוד/סלמון
+};
+
+const BOND_COLOR = 0x222222;
+const BOND_RADIUS = 0.13;          // עבה וברור
+const DOUBLE_BOND_OFFSET = 0.14;   // מרחק בין שני הקווים
+const DOUBLE_BOND_RADIUS = 0.11;
+
+function ensureOverlay(el, text) {
+  let o = el.querySelector(".mol-overlay");
+  if (!o) { o = document.createElement("div"); o.className = "mol-overlay"; el.appendChild(o); }
+  o.textContent = text || "";
+  return o;
+}
+
+async function loadText(path) {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
+  return await res.text();
+}
+
+function attachControls(el, viewer, { spinAxis="y", spinSpeed=0.45 } = {}) {
+  viewer.spin(spinAxis, spinSpeed);
+
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const dy = Math.max(-120, Math.min(120, e.deltaY));
+    const strength = Math.abs(dy) / 120;
+    const step = 1 + (0.05 * strength);
+    const zoomFactor = dy > 0 ? step : (1 / step);
+    viewer.zoom(zoomFactor);
+    viewer.render();
+  }, { passive: false });
+
+  const stopSpin = () => viewer.spin(false);
+  el.addEventListener("mousedown", stopSpin);
+  el.addEventListener("touchstart", stopSpin, { passive: true });
+
+  const ro = new ResizeObserver(() => { viewer.resize(); viewer.render(); });
+  ro.observe(el);
+}
+
+/* -------- PDB parsing -------- */
+
+function parsePDBAtoms(pdbText) {
+  const atoms = [];
+  const lines = pdbText.split(/\r?\n/);
+  for (const line of lines) {
+    const rec = line.slice(0,6).trim();
+    if (rec !== "ATOM" && rec !== "HETATM") continue;
+
+    const serial = parseInt(line.slice(6,11).trim(), 10);
+    const x = parseFloat(line.slice(30,38).trim());
+    const y = parseFloat(line.slice(38,46).trim());
+    const z = parseFloat(line.slice(46,54).trim());
+
+    // element column (76-78) אם קיים
+    let elem = (line.length >= 78 ? line.slice(76,78).trim() : "");
+    if (!elem) {
+      // fallback: atom name (12-16) – מנקה מספרים כמו H1,H2
+      const name = line.slice(12,16).trim();
+      elem = name.replace(/[^A-Za-z]/g, "").slice(0,2);
+    }
+    elem = elem.charAt(0).toUpperCase() + elem.slice(1).toLowerCase();
+
+    atoms.push({ serial, elem, x, y, z });
+  }
+  return atoms;
+}
+
+function parsePDBCONECT(pdbText) {
+  const bonds = [];
+  const seen = new Set();
+  const lines = pdbText.split(/\r?\n/);
+  for (const line of lines) {
+    if (!line.startsWith("CONECT")) continue;
+    const parts = line.trim().split(/\s+/).slice(1).map(v => parseInt(v,10)).filter(Boolean);
+    if (parts.length < 2) continue;
+    const a = parts[0];
+    for (let i=1;i<parts.length;i++){
+      const b = parts[i];
+      const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      bonds.push([a,b]);
+    }
+  }
+  return bonds;
+}
+
+// אם אין CONECT – ננחש קשרים לפי מרחקים (מספיק למולקולות קטנות)
+function inferBondsByDistance(atoms) {
+  const cov = { H:0.31, C:0.76, N:0.71, O:0.66, F:0.57, B:0.85 };
+  const bonds = [];
+  const seen = new Set();
+
+  for (let i=0;i<atoms.length;i++){
+    for (let j=i+1;j<atoms.length;j++){
+      const a = atoms[i], b = atoms[j];
+      if (a.elem === "H" && b.elem === "H") continue;
+
+      const ra = cov[a.elem] ?? 0.77;
+      const rb = cov[b.elem] ?? 0.77;
+
+      const dx=a.x-b.x, dy=a.y-b.y, dz=a.z-b.z;
+      const d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+
+      const cutoff = 1.25*(ra+rb);
+      if (d <= cutoff) {
+        const key = a.serial < b.serial ? `${a.serial}-${b.serial}` : `${b.serial}-${a.serial}`;
+        if (!seen.has(key)) { seen.add(key); bonds.push([a.serial, b.serial]); }
       }
-      o.textContent = text || "";
-      return o;
     }
+  }
+  return bonds;
+}
 
-    async function loadText(path) {
-      const res = await fetch(path, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
-      return await res.text();
-    }
+/* -------- Geometry helpers -------- */
+const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
+const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
+const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
+const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
 
-    function attachControls(el, viewer, { spinAxis="y", spinSpeed=0.45 } = {}) {
-      viewer.spin(spinAxis, spinSpeed);
+/* -------- Render atoms/bonds (FIXED) -------- */
 
-      // zoom עדין ונשלט
-      el.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const dy = Math.max(-120, Math.min(120, e.deltaY));
-        const strength = Math.abs(dy) / 120;
-        const step = 1 + (0.05 * strength);
-        const zoomFactor = dy > 0 ? step : (1 / step);
-        viewer.zoom(zoomFactor);
-        viewer.render();
-      }, { passive: false });
+// מצייר אטומים עם רדיוס קבוע וצבע קבוע
+function drawAtoms(viewer, atoms) {
+  for (const a of atoms) {
+    const r = ATOM_RADIUS[a.elem] ?? 0.32;
+    const c = ATOM_COLOR[a.elem] ?? 0xBBBBBB;
+    viewer.addSphere({ center: {x:a.x,y:a.y,z:a.z}, radius: r, color: c });
+  }
+}
 
-      // עצירת spin בזמן אינטראקציה
-      const stopSpin = () => viewer.spin(false);
-      el.addEventListener("mousedown", stopSpin);
-      el.addEventListener("touchstart", stopSpin, { passive: true });
+// מצייר קשרים כך שיגעו בכדורים (על פני השטח) ולא ייבלעו בהם
+function drawBond(viewer, a, b, radius = BOND_RADIUS, color = BOND_COLOR) {
+  const ra = ATOM_RADIUS[a.elem] ?? 0.32;
+  const rb = ATOM_RADIUS[b.elem] ?? 0.32;
 
-      // resize יציב
-      const ro = new ResizeObserver(() => { viewer.resize(); viewer.render(); });
-      ro.observe(el);
-    }
+  const dir = unit(sub(b, a));
+  // נקודת התחלה/סוף על מעטפת הכדור (עם מרווח קטן כדי שלא ייצא “חור”)
+  const pad = 0.02;
+  const start = add(a, mul(dir, ra - pad));
+  const end   = add(b, mul(dir, -(rb - pad)));
 
-    // ===== PDB parsing + bond inference =====
-    function parsePDBAtoms(pdbText) {
-      const atoms = [];
-      const lines = pdbText.split(/\r?\n/);
-      for (const line of lines) {
-        const rec = line.slice(0,6).trim();
-        if (rec !== "ATOM" && rec !== "HETATM") continue;
+  viewer.addCylinder({ start, end, radius, color });
+}
 
-        const serial = parseInt(line.slice(6,11).trim(), 10);
-        const x = parseFloat(line.slice(30,38).trim());
-        const y = parseFloat(line.slice(38,46).trim());
-        const z = parseFloat(line.slice(46,54).trim());
+function drawBonds(viewer, atoms, bonds) {
+  const bySerial = new Map(atoms.map(a => [a.serial, a]));
+  for (const [sa, sb] of bonds) {
+    const a = bySerial.get(sa), b = bySerial.get(sb);
+    if (!a || !b) continue;
+    drawBond(viewer, a, b, BOND_RADIUS, BOND_COLOR);
+  }
+}
 
-        let elem = (line.length >= 78 ? line.slice(76,78).trim() : "");
-        if (!elem) {
-          const name = line.slice(12,16).trim();
-          elem = name.replace(/[^A-Za-z]/g, "").slice(0,2);
-        }
-        elem = elem.charAt(0).toUpperCase() + elem.slice(1).toLowerCase();
-        atoms.push({ serial, elem, x, y, z });
-      }
-      return atoms;
-    }
+// קשר כפול: שני גלילים מקבילים, גם הם “נוגעים” בכדורים
+function drawDoubleBond(viewer, a, b) {
+  const u = unit(sub(b, a));
+  let perp = cross(u, {x:0,y:0,z:1});
+  if (norm(perp) < 1e-6) perp = cross(u, {x:0,y:1,z:0});
+  perp = unit(perp);
 
-    function parsePDBCONECT(pdbText) {
-      const bonds = [];
-      const seen = new Set();
-      const lines = pdbText.split(/\r?\n/);
-      for (const line of lines) {
-        if (!line.startsWith("CONECT")) continue;
-        const parts = line.trim().split(/\s+/).slice(1).map(v => parseInt(v,10)).filter(Boolean);
-        if (parts.length < 2) continue;
-        const a = parts[0];
-        for (let i=1;i<parts.length;i++){
-          const b = parts[i];
-          const key = a < b ? `${a}-${b}` : `${b}-${a}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          bonds.push([a,b]);
-        }
-      }
-      return bonds;
-    }
+  const offset = DOUBLE_BOND_OFFSET;
 
-    function inferBondsByDistance(atoms) {
-      const r = { H:0.31, C:0.76, N:0.71, O:0.66, F:0.57, B:0.85, S:1.05, Cl:1.02, Br:1.20, I:1.39 };
-      const bonds = [];
-      const seen = new Set();
+  const a1 = add(a, mul(perp,  offset));
+  const b1 = add(b, mul(perp,  offset));
+  const a2 = add(a, mul(perp, -offset));
+  const b2 = add(b, mul(perp, -offset));
 
-      for (let i=0;i<atoms.length;i++){
-        for (let j=i+1;j<atoms.length;j++){
-          const a = atoms[i], b = atoms[j];
-          if (a.elem === "H" && b.elem === "H") continue;
+  drawBond(viewer, a1, b1, DOUBLE_BOND_RADIUS, BOND_COLOR);
+  drawBond(viewer, a2, b2, DOUBLE_BOND_RADIUS, BOND_COLOR);
+}
 
-          const ra = r[a.elem] ?? 0.77;
-          const rb = r[b.elem] ?? 0.77;
+/* -------- Initializers -------- */
 
-          const dx=a.x-b.x, dy=a.y-b.y, dz=a.z-b.z;
-          const d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+async function initGeneric({ elId, pdbFile, overlayText }) {
+  const el = document.getElementById(elId);
+  if (!el) return;
 
-          const cutoff = 1.25*(ra+rb);
-          if (d <= cutoff) {
-            const key = a.serial < b.serial ? `${a.serial}-${b.serial}` : `${b.serial}-${a.serial}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              bonds.push([a.serial, b.serial]);
-            }
-          }
-        }
-      }
-      return bonds;
-    }
+  ensureOverlay(el, "טוען…");
+  const pdb = await loadText("./" + pdbFile);
 
-    function drawBondsAsCylinders(viewer, atoms, bonds, { radius=0.16, color=0x222222 } = {}) {
-      const bySerial = new Map(atoms.map(a => [a.serial, a]));
-      for (const [sa,sb] of bonds) {
-        const a = bySerial.get(sa), b = bySerial.get(sb);
-        if (!a || !b) continue;
-        viewer.addCylinder({
-          start: {x:a.x,y:a.y,z:a.z},
-          end:   {x:b.x,y:b.y,z:b.z},
-          radius,
-          color
-        });
-      }
-    }
+  const viewer = $3Dmol.createViewer(el, { backgroundColor: "white" });
 
-    // ===== init generic: spheres + thick bond cylinders =====
-    async function initGeneric({ elId, pdbFile, overlayText }) {
-      const el = document.getElementById(elId);
-      if (!el) return;
+  const atoms = parsePDBAtoms(pdb);
+  let bonds = parsePDBCONECT(pdb);
+  if (!bonds.length) bonds = inferBondsByDistance(atoms);
 
-      ensureOverlay(el, "טוען…");
-      const pdb = await loadText("./" + pdbFile);
+  // ציור ידני (לא תלוי בסטיילים של 3Dmol)
+  drawBonds(viewer, atoms, bonds);
+  drawAtoms(viewer, atoms);
 
-      const viewer = $3Dmol.createViewer(el, { backgroundColor: "white", defaultcolors: $3Dmol.rasmolColors });
-      viewer.addModel(pdb, "pdb");
+  ensureOverlay(el, overlayText);
+  viewer.zoomTo();
+  viewer.render();
+  attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+}
 
-      // spheres
-      viewer.setStyle({}, { sphere: { scale: 0.38 } });
-      viewer.setStyle({ elem: "H" }, { sphere: { scale: 0.28 } });
-      viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.46 } });
+async function initCO2() {
+  const el = document.getElementById("canvas_co2");
+  if (!el) return;
 
-      // bonds
-      const atoms = parsePDBAtoms(pdb);
-      let bonds = parsePDBCONECT(pdb);
-      if (!bonds.length) bonds = inferBondsByDistance(atoms);
-      drawBondsAsCylinders(viewer, atoms, bonds, { radius: 0.16, color: 0x222222 });
+  ensureOverlay(el, "טוען…");
+  const pdb = await loadText("./co2.pdb");
+  const viewer = $3Dmol.createViewer(el, { backgroundColor: "white" });
 
-      ensureOverlay(el, overlayText);
-      viewer.zoomTo();
-      viewer.render();
-      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
-    }
+  const atoms = parsePDBAtoms(pdb);
+  const C = atoms.find(a => a.elem === "C");
+  const Os = atoms.filter(a => a.elem === "O");
 
-    // ===== CO2: thick cylinders + DOUBLE bonds emphasized =====
-    async function initCO2() {
-      const el = document.getElementById("canvas_co2");
-      if (!el) return;
+  // גיבוי: קשרים רגילים (כדי שתמיד יהיה משהו)
+  let bonds = parsePDBCONECT(pdb);
+  if (!bonds.length) bonds = inferBondsByDistance(atoms);
+  drawBonds(viewer, atoms, bonds);
 
-      ensureOverlay(el, "טוען…");
-      const pdb = await loadText("./co2.pdb");
+  // קשרים כפולים מודגשים (O=C=O) — רק אם זיהינו C ושני O
+  if (C && Os.length >= 2) {
+    drawDoubleBond(viewer, C, Os[0]);
+    drawDoubleBond(viewer, C, Os[1]);
+    ensureOverlay(el, "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)");
+  } else {
+    ensureOverlay(el, "צורה: קווית (Linear)");
+  }
 
-      const viewer = $3Dmol.createViewer(el, { backgroundColor: "white", defaultcolors: $3Dmol.rasmolColors });
-      viewer.addModel(pdb, "pdb");
+  drawAtoms(viewer, atoms);
 
-      // spheres
-      viewer.setStyle({}, { sphere: { scale: 0.40 } });
-      viewer.setStyle({ elem: "O" }, { sphere: { scale: 0.48 } });
-      viewer.setStyle({ elem: "C" }, { sphere: { scale: 0.42 } });
+  viewer.zoomTo();
+  viewer.render();
+  attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+}
 
-      const atoms = parsePDBAtoms(pdb);
-      const bySerial = new Map(atoms.map(a => [a.serial, a]));
-      const C = atoms.find(a => a.elem === "C");
-      const Os = atoms.filter(a => a.elem === "O");
-
-      // fallback single-bond thick lines (always)
-      let bonds = parsePDBCONECT(pdb);
-      if (!bonds.length) bonds = inferBondsByDistance(atoms);
-      drawBondsAsCylinders(viewer, atoms, bonds, { radius: 0.14, color: 0x222222 });
-
-      // math helpers
-      const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
-      const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
-      const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
-      const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
-      const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
-      const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
-
-      function drawDoubleBond(a,b){
-        const u = unit(sub(b,a));
-        let perp = cross(u,{x:0,y:0,z:1});
-        if(norm(perp)<1e-6) perp=cross(u,{x:0,y:1,z:0});
-        perp = unit(perp);
-
-        const offset = 0.16;
-        const radius = 0.13;
-        const color  = 0x222222;
-
-        viewer.addCylinder({ start: add(a,mul(perp,  offset)), end: add(b,mul(perp,  offset)), radius, color });
-        viewer.addCylinder({ start: add(a,mul(perp, -offset)), end: add(b,mul(perp, -offset)), radius, color });
-      }
-
-      if (C && Os.length >= 2) {
-        drawDoubleBond(C, Os[0]);
-        drawDoubleBond(C, Os[1]);
-        ensureOverlay(el, "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)");
-      } else {
-        ensureOverlay(el, "צורה: קווית (Linear)");
-      }
-
-      viewer.zoomTo();
-      viewer.render();
-      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
-    }
-
-    // ===== Start =====
-    window.addEventListener("DOMContentLoaded", () => {
-      initGeneric({ elId: "canvas_water",   pdbFile: "water.pdb",   overlayText: "צורה: זוויתית (Bent)" }).catch(console.error);
-      initGeneric({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
-      initGeneric({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
-      initCO2().catch(console.error);
-      initGeneric({ elId: "canvas_hcn",     pdbFile: "hcn.pdb",     overlayText: "צורה: קווית (Linear)" }).catch(console.error);
-      initGeneric({ elId: "canvas_bf3",     pdbFile: "bf3.pdb",     overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
-    });
-  </script>
+/* -------- Start -------- */
+window.addEventListener("DOMContentLoaded", () => {
+  initGeneric({ elId: "canvas_water",   pdbFile: "water.pdb",   overlayText: "צורה: זוויתית (Bent)" }).catch(console.error);
+  initGeneric({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
+  initGeneric({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
+  initCO2().catch(console.error);
+  initGeneric({ elId: "canvas_hcn",     pdbFile: "hcn.pdb",     overlayText: "צורה: קווית (Linear)" }).catch(console.error);
+  initGeneric({ elId: "canvas_bf3",     pdbFile: "bf3.pdb",     overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
+});
+</script>
 </body>
 </html>
