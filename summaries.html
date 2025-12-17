@@ -98,34 +98,46 @@
 
 <script>
 /* =========================
-   VISUAL SETTINGS (fixed)
+   VISUAL SETTINGS
    ========================= */
 
-// האטומים גדלים פי 2.5
+// האטומים גדולים (פי 2.5)
 const ATOM_SCALE = 2.5;
 
 // בסיס רדיוסים (Å)
 const ATOM_RADIUS_BASE = { H:0.23, C:0.33, N:0.32, O:0.31, F:0.30, B:0.34 };
 
-// צבעים לימודיים (קבועים, מובחנים)
+// צבעים לימודיים
 const ATOM_COLOR = {
   H: 0xFFFFFF, C: 0x8E8E8E, N: 0x3F51B5, O: 0xE53935, F: 0x43A047, B: 0xF48FB1
 };
 
-// קשרים (לא מקטינים)
-const BOND_COLOR  = 0x222222;
-const BOND_RADIUS = 0.13;
+// צבע קשרים
+const BOND_COLOR = 0x111111;
 
-// קשרים כפולים – שני קווים ברורים (לא מלבן)
-const DOUBLE_BOND_OFFSET = 0.45; // ↑ הוגדל כדי להפריד בין הקווים
-const DOUBLE_BOND_RADIUS = 0.12;
+// קשר כפול: שני קווים
+const DOUBLE_BOND_OFFSET = 0.42;
+const DOUBLE_BOND_RADIUS_FACTOR = 0.22; // מתוך רדיוס האטום הקטן
 
-// הגדלת התצוגה בתוך המסגרת (אחרי zoomTo)
+// הגדלת התצוגה בתוך המסגרת (כמו שהיה אצלך “טוב”)
 const MODEL_ZOOM_MULT = 2.4;
+
+// סטייה קטנה כדי שהקשר “ינגע” באטום ולא יבלע
+const SURFACE_PAD = 0.06;
 
 function r(elem){ return (ATOM_RADIUS_BASE[elem] ?? 0.32) * ATOM_SCALE; }
 function c(elem){ return ATOM_COLOR[elem] ?? 0xBBBBBB; }
 
+// עובי קשר “חכם” (פרופורציונלי לאטומים, אבל לא מוגזם)
+function bondRadiusFor(aElem, bElem){
+  const m = Math.min(r(aElem), r(bElem));
+  // בין ~0.10 ל ~0.22 (יוצא מאוד ברור, ופרופורציונלי לאטומים)
+  return Math.max(0.10, Math.min(0.22, m * 0.28));
+}
+
+/* =========================
+   HELPERS
+   ========================= */
 function ensureOverlay(el, text) {
   let o = el.querySelector(".mol-overlay");
   if (!o) { o = document.createElement("div"); o.className = "mol-overlay"; el.appendChild(o); }
@@ -179,7 +191,6 @@ function parsePDBAtoms(pdbText) {
       elem = name.replace(/[^A-Za-z]/g, "").slice(0,2);
     }
     elem = elem.charAt(0).toUpperCase() + elem.slice(1).toLowerCase();
-
     atoms.push({ serial, elem, x, y, z });
   }
   return atoms;
@@ -239,6 +250,10 @@ const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
 const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
 const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
 
+function shiftAtom(atom, vec){
+  return { x: atom.x + vec.x, y: atom.y + vec.y, z: atom.z + vec.z, elem: atom.elem };
+}
+
 /* -------- Render atoms/bonds -------- */
 function drawAtoms(viewer, atoms) {
   for (const a of atoms) {
@@ -246,18 +261,17 @@ function drawAtoms(viewer, atoms) {
   }
 }
 
-// קשר “נוגע” באטומים (ולא נכנס לכדור) — זה התיקון הקריטי!
-function drawBond(viewer, a, b, radius = BOND_RADIUS, color = BOND_COLOR) {
+// קשר “נוגע” באטומים (אורך נכון) + עובי פרופורציונלי
+function drawBond(viewer, a, b) {
   const ra = r(a.elem);
   const rb = r(b.elem);
-
   const dir = unit(sub(b, a));
-  const pad = 0.06; // מותאם להגדלת האטומים
 
-  const start = add(a, mul(dir,  ra + pad));
-  const end   = add(b, mul(dir, -(rb + pad)));
+  const start = add(a, mul(dir,  ra + SURFACE_PAD));
+  const end   = add(b, mul(dir, -(rb + SURFACE_PAD)));
 
-  viewer.addCylinder({ start, end, radius, color });
+  const radius = bondRadiusFor(a.elem, b.elem);
+  viewer.addCylinder({ start, end, radius, color: BOND_COLOR });
 }
 
 function drawBonds(viewer, atoms, bonds) {
@@ -265,15 +279,11 @@ function drawBonds(viewer, atoms, bonds) {
   for (const [sa, sb] of bonds) {
     const a = bySerial.get(sa), b = bySerial.get(sb);
     if (!a || !b) continue;
-    drawBond(viewer, a, b, BOND_RADIUS, BOND_COLOR);
+    drawBond(viewer, a, b);
   }
 }
 
-function shiftAtom(atom, vec){
-  return { x: atom.x + vec.x, y: atom.y + vec.y, z: atom.z + vec.z, elem: atom.elem };
-}
-
-// קשר כפול: שני קווים מקבילים ברורים (ולא מלבן)
+// קשר כפול: שני קווים מקבילים (ומתחילים/נגמרים על פני האטומים)
 function drawDoubleBond(viewer, a, b) {
   const u = unit(sub(b, a));
   let perp = cross(u, {x:0,y:0,z:1});
@@ -281,13 +291,48 @@ function drawDoubleBond(viewer, a, b) {
   perp = unit(perp);
 
   const off = mul(perp, DOUBLE_BOND_OFFSET);
+  const radius = Math.max(0.10, Math.min(0.20, Math.min(r(a.elem), r(b.elem)) * DOUBLE_BOND_RADIUS_FACTOR));
 
-  drawBond(viewer, shiftAtom(a, off),       shiftAtom(b, off),       DOUBLE_BOND_RADIUS, BOND_COLOR);
-  drawBond(viewer, shiftAtom(a, mul(off,-1)), shiftAtom(b, mul(off,-1)), DOUBLE_BOND_RADIUS, BOND_COLOR);
+  // משתמשים ב-drawBond, אבל עם אטומים “מוסטיים”
+  const a1 = shiftAtom(a, off), b1 = shiftAtom(b, off);
+  const a2 = shiftAtom(a, mul(off,-1)), b2 = shiftAtom(b, mul(off,-1));
+
+  // גרסה עם radius ספציפי לקשר כפול
+  const ra = r(a.elem), rb = r(b.elem);
+  const dir1 = unit(sub(b1, a1));
+  const s1 = add(a1, mul(dir1,  ra + SURFACE_PAD));
+  const e1 = add(b1, mul(dir1, -(rb + SURFACE_PAD)));
+  viewer.addCylinder({ start:s1, end:e1, radius, color:BOND_COLOR });
+
+  const dir2 = unit(sub(b2, a2));
+  const s2 = add(a2, mul(dir2,  ra + SURFACE_PAD));
+  const e2 = add(b2, mul(dir2, -(rb + SURFACE_PAD)));
+  viewer.addCylinder({ start:s2, end:e2, radius, color:BOND_COLOR });
 }
 
-/* -------- Initializers -------- */
-async function initGeneric({ elId, pdbFile, overlayText }) {
+/* -------- init -------- */
+function applyInitialView(viewer, preset){
+  // כדי “להראות תלת מימד” בעין (כמו הסקיצה)
+  if (!preset) return;
+  if (preset === "tetra") {
+    viewer.rotate(28, "x");
+    viewer.rotate(35, "y");
+  } else if (preset === "pyramidal") {
+    viewer.rotate(32, "x");
+    viewer.rotate(25, "y");
+  } else if (preset === "planar") {
+    viewer.rotate(18, "x");
+    viewer.rotate(10, "y");
+  } else if (preset === "bent") {
+    viewer.rotate(22, "x");
+    viewer.rotate(20, "y");
+  } else if (preset === "linear") {
+    viewer.rotate(10, "x");
+    viewer.rotate(20, "y");
+  }
+}
+
+async function initGeneric({ elId, pdbFile, overlayText, viewPreset }) {
   const el = document.getElementById(elId);
   if (!el) return;
 
@@ -300,15 +345,18 @@ async function initGeneric({ elId, pdbFile, overlayText }) {
   let bonds = parsePDBCONECT(pdb);
   if (!bonds.length) bonds = inferBondsByDistance(atoms);
 
+  // 1) קשרים
   drawBonds(viewer, atoms, bonds);
+  // 2) אטומים מעליהם
   drawAtoms(viewer, atoms);
 
   ensureOverlay(el, overlayText);
 
   viewer.zoomTo();
-  viewer.zoom(MODEL_ZOOM_MULT); // הגדלת התצוגה בתוך המסגרת
-  viewer.render();
+  viewer.zoom(MODEL_ZOOM_MULT);   // שומר “אותו גודל” תצוגה
+  applyInitialView(viewer, viewPreset);
 
+  viewer.render();
   attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
 }
 
@@ -324,37 +372,37 @@ async function initCO2() {
   const C = atoms.find(a => a.elem === "C");
   const Os = atoms.filter(a => a.elem === "O");
 
-  // קשרים רגילים (גיבוי)
-  let bonds = parsePDBCONECT(pdb);
-  if (!bonds.length) bonds = inferBondsByDistance(atoms);
-  drawBonds(viewer, atoms, bonds);
-
-  // קשרים כפולים כ"שני קווים"
+  // CO2: מציירים רק קשרים כפולים (בלי קשר “יחיד” מתחת)
   if (C && Os.length >= 2) {
     drawDoubleBond(viewer, C, Os[0]);
     drawDoubleBond(viewer, C, Os[1]);
     ensureOverlay(el, "צורה: קווית (Linear) • שני קשרים כפולים (O=C=O)");
   } else {
+    // fallback
+    let bonds = parsePDBCONECT(pdb);
+    if (!bonds.length) bonds = inferBondsByDistance(atoms);
+    drawBonds(viewer, atoms, bonds);
     ensureOverlay(el, "צורה: קווית (Linear)");
   }
 
   drawAtoms(viewer, atoms);
 
   viewer.zoomTo();
-  viewer.zoom(MODEL_ZOOM_MULT); // הגדלת התצוגה בתוך המסגרת
-  viewer.render();
+  viewer.zoom(MODEL_ZOOM_MULT);
+  applyInitialView(viewer, "linear");
 
+  viewer.render();
   attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
 }
 
 /* -------- Start -------- */
 window.addEventListener("DOMContentLoaded", () => {
-  initGeneric({ elId: "canvas_water",   pdbFile: "water.pdb",   overlayText: "צורה: זוויתית (Bent)" }).catch(console.error);
-  initGeneric({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
-  initGeneric({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
+  initGeneric({ elId: "canvas_water",   pdbFile: "water.pdb",   overlayText: "צורה: זוויתית (Bent)", viewPreset:"bent" }).catch(console.error);
+  initGeneric({ elId: "canvas_methane", pdbFile: "methane.pdb", overlayText: "צורה: טטראדרית (Tetrahedral)", viewPreset:"tetra" }).catch(console.error);
+  initGeneric({ elId: "canvas_ammonia", pdbFile: "ammonia.pdb", overlayText: "צורה: פירמידה משולשת (Trigonal pyramidal)", viewPreset:"pyramidal" }).catch(console.error);
   initCO2().catch(console.error);
-  initGeneric({ elId: "canvas_hcn",     pdbFile: "hcn.pdb",     overlayText: "צורה: קווית (Linear)" }).catch(console.error);
-  initGeneric({ elId: "canvas_bf3",     pdbFile: "bf3.pdb",     overlayText: "צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
+  initGeneric({ elId: "canvas_hcn",     pdbFile: "hcn.pdb",     overlayText: "צורה: קווית (Linear)", viewPreset:"linear" }).catch(console.error);
+  initGeneric({ elId: "canvas_bf3",     pdbFile: "bf3.pdb",     overlayText: "צורה: משולש מישורי (Trigonal planar)", viewPreset:"planar" }).catch(console.error);
 });
 </script>
 </body>
