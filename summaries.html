@@ -8,22 +8,30 @@
   <script src="./3dmol-min.js"></script>
 
   <style>
-    .summary-section{background:#ecf0f1;padding:20px;border-radius:8px;margin-bottom:30px;text-align:right;border-right:5px solid #e74c3c}
-    .summary-section h3{color:#2c3e50;border-bottom:1px solid #3498db;padding-bottom:5px;margin:0 0 15px}
+    .summary-section{
+      background:#ecf0f1; padding:20px; border-radius:8px; margin-bottom:30px;
+      text-align:right; border-right:5px solid #e74c3c;
+    }
+    .summary-section h3{
+      color:#2c3e50; border-bottom:1px solid #3498db; padding-bottom:5px;
+      margin-top:0; margin-bottom:15px;
+    }
     .molecule-display{
-      width:100%;max-width:720px;height:420px;margin:20px auto;
-      border:2px solid #3498db;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.1);
-      position:relative;overflow:hidden;touch-action:none;background:#fff
+      width:100%; max-width:720px; height:420px;   /* קצת יותר גדול כדי “לנשום” */
+      margin:20px auto; border:2px solid #3498db; border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.10);
+      position:relative; overflow:hidden; touch-action:none; background:white;
     }
     .mol-overlay{
-      position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:10px;
-      background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.10);
-      font-weight:800;font-size:14px;z-index:5;user-select:none
+      position:absolute; top:10px; left:10px; padding:8px 10px; border-radius:10px;
+      background:rgba(255,255,255,0.90); border:1px solid rgba(0,0,0,0.10);
+      font-weight:800; font-size:14px; z-index:5; user-select:none;
     }
-    .sub{vertical-align:sub;font-size:smaller}
-    .mastery-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:.95em}
-    .mastery-table th,.mastery-table td{border:1px solid #ddd;padding:12px;text-align:center}
-    .mastery-table th{background:#34495e;color:#fff;font-weight:700}
+    .sub { vertical-align: sub; font-size: smaller; }
+
+    .mastery-table{ width:100%; border-collapse:collapse; margin-top:15px; font-size:0.95em; }
+    .mastery-table th,.mastery-table td{ border:1px solid #ddd; padding:12px; text-align:center; }
+    .mastery-table th{ background:#34495e; color:white; font-weight:700; }
   </style>
 </head>
 
@@ -39,7 +47,7 @@
 
   <div class="game-container">
     <h2>מבנה מולקולרי וקישור: דגמים אינטראקטיביים</h2>
-    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. <b>לחץ וגרור על המולקולה כדי לסובב אותה.</b></p>
+    <p>הדגמים למטה מאפשרים לכם לסובב ולבחון את המבנה המרחבי של מולקולות מפתח. <b>לחץ וגרור כדי לסובב.</b></p>
 
     <div class="summary-section">
       <h3>1. מים (H<sub class="sub">2</sub>O): מבנה זוויתי וקוטביות</h3>
@@ -61,7 +69,7 @@
 
     <div class="summary-section">
       <h3>4. פחמן דו-חמצני (CO<sub class="sub">2</sub>): מבנה קווי</h3>
-      <p>למולקולה מבנה קווי (180°). למרות קשרים קוטביים, המשיכות מתבטלות בשל הסימטריה המרחבית, ולכן המולקולה אינה קוטבית.</p>
+      <p>למולקולה מבנה קווי (180°). למרות קשרים קוטביים, המשיכות מתבטלות בשל הסימטריה, ולכן אינה קוטבית.</p>
       <div id="canvas_co2" class="molecule-display"></div>
     </div>
 
@@ -73,7 +81,7 @@
 
     <div class="summary-section">
       <h3>6. בורון טריפלואוריד (BF<sub class="sub">3</sub>): משולש מישורי</h3>
-      <p>מולקולה סימטרית ואי-קוטבית לחלוטין. שלושה אטומים המחוברים ב-120° לאטום מרכזי (בורון).</p>
+      <p>מולקולה סימטרית ואי-קוטבית. שלושה אטומים ב־120° סביב אטום מרכזי.</p>
       <div id="canvas_bf3" class="molecule-display"></div>
     </div>
 
@@ -83,13 +91,14 @@
       <table class="mastery-table">
         <thead>
           <tr>
-            <th>מבנה גיאומטרי</th><th>אזורים דוחים</th><th>זוגות לא-קושרים</th><th>זווית אופיינית</th><th>קוטביות (דוגמה)</th>
+            <th>מבנה גיאומטרי</th><th>אזורים דוחים</th><th>זוגות לא-קושרים</th>
+            <th>זווית אופיינית</th><th>קוטביות (דוגמה)</th>
           </tr>
         </thead>
         <tbody>
           <tr><td>קווי</td><td>2</td><td>0</td><td>180°</td><td>אינה קוטבית (CO<sub class="sub">2</sub>)</td></tr>
           <tr><td>משולש מישורי</td><td>3</td><td>0</td><td>120°</td><td>אינה קוטבית (BF<sub class="sub">3</sub>)</td></tr>
-          <tr><td>זוויתית</td><td>3</td><td>1</td><td>&lt; 120°</td><td>קוטבית (SO<sub class="sub">2</sub>)</td></tr>
+          <tr><td>זוויתית</td><td>3</td><td>1</td><td>&lt;120°</td><td>קוטבית (SO<sub class="sub">2</sub>)</td></tr>
           <tr><td>טטראדרי</td><td>4</td><td>0</td><td>109.5°</td><td>אינה קוטבית (CH<sub class="sub">4</sub>)</td></tr>
           <tr><td>פירמידה משולשת</td><td>4</td><td>1</td><td>107°</td><td>קוטבית (NH<sub class="sub">3</sub>)</td></tr>
           <tr><td>זוויתית (מים)</td><td>4</td><td>2</td><td>104.5°</td><td>קוטבית (H<sub class="sub">2</sub>O)</td></tr>
@@ -98,262 +107,262 @@
     </div>
   </div>
 
-<script>
-  // ============================================================
-  // דרישות:
-  // 1) האטומים קטנים פי 2 => ATOM_SCALE = 0.5
-  // 2) קשרים כמוטות ברורים (לא להקטין קשרים)
-  // 3) המודל עם הקשרים ימלא ~80% מהמסגרת => FILL_ZOOM ~ 1.75
-  // ============================================================
-  const ATOM_SCALE = 0.5;
-
-  // אחרי viewer.zoomTo() זה "מתאים למסגרת". כדי שיתפוס ~80%,
-  // אנחנו מגדילים קצת. 1.75 עובד טוב לרוב המולקולות כאן.
-  const FILL_ZOOM = 1.75;
-
-  const BOND = {
-    color: 0x222222,
-    singleRadius: 0.14,   // מוט ברור
-    multiRadius:  0.10,   // קווים לקשר כפול/משולש
-    multiOffset:  0.26,   // הפרדה בין הקווים כדי שלא ייראה כמו מלבן
-    shrink:       0.12    // קיצור קצוות כדי לא "להיכנס" לכדור
-  };
-
-  function ensureOverlay(el, text) {
-    let o = el.querySelector(".mol-overlay");
-    if (!o) { o = document.createElement("div"); o.className = "mol-overlay"; el.appendChild(o); }
-    o.textContent = text || "";
-    return o;
-  }
-
-  async function loadText(path) {
-    const res = await fetch(path, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to fetch ${path} (${res.status})`);
-    return await res.text();
-  }
-
-  function attachControls(el, viewer, { spinAxis="y", spinSpeed=0.45 } = {}) {
-    viewer.spin(spinAxis, spinSpeed);
-
-    el.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      const dy = Math.max(-120, Math.min(120, e.deltaY));
-      const strength = Math.abs(dy) / 120;
-      const step = 1 + (0.05 * strength);
-      const zoomFactor = dy > 0 ? step : (1 / step);
-      viewer.zoom(zoomFactor);
-      viewer.render();
-    }, { passive:false });
-
-    const stopSpin = () => viewer.spin(false);
-    el.addEventListener("mousedown", stopSpin);
-    el.addEventListener("touchstart", stopSpin, { passive:true });
-
-    const ro = new ResizeObserver(() => { viewer.resize(); viewer.render(); });
-    ro.observe(el);
-  }
-
-  // Vector utils
-  const sub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
-  const add = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
-  const mul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
-  const norm = v=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
-  const unit = v=>{const n=norm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n};};
-  const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
-
-  function parsePDBCONECT(pdbText) {
-    const lines = pdbText.split(/\r?\n/);
-    const pairs = [];
-    for (const line of lines) {
-      if (!line.startsWith("CONECT")) continue;
-      const nums = line.slice(6).trim().split(/\s+/).map(x => parseInt(x,10)).filter(n => !isNaN(n));
-      if (nums.length >= 2) {
-        const a = nums[0];
-        for (let k=1;k<nums.length;k++) pairs.push([a, nums[k]]);
-      }
-    }
-    const key = (a,b)=> (a<b? `${a}-${b}`:`${b}-${a}`);
-    const seen = new Set();
-    const out = [];
-    for (const [a,b] of pairs) {
-      const k = key(a,b);
-      if (seen.has(k)) continue;
-      seen.add(k);
-      out.push([a,b]);
-    }
-    return out;
-  }
-
-  const COV_R = { H:0.31, C:0.76, N:0.71, O:0.66, F:0.57, B:0.85 };
-  function inferBondsByDistance(atoms) {
-    const out = [];
-    for (let i=0;i<atoms.length;i++){
-      for (let j=i+1;j<atoms.length;j++){
-        const a=atoms[i], b=atoms[j];
-        const ra=COV_R[a.elem] ?? 0.75;
-        const rb=COV_R[b.elem] ?? 0.75;
-        const max = (ra+rb)*1.35;
-        const d = norm(sub(a,b));
-        if (d > 0.15 && d < max) out.push([a.serial, b.serial]);
-      }
-    }
-    return out;
-  }
-
-  function drawBondCylinders(viewer, A, B, order) {
-    const u = unit(sub(B, A));
-    let perp = cross(u, {x:0,y:0,z:1});
-    if (norm(perp) < 1e-6) perp = cross(u, {x:0,y:1,z:0});
-    perp = unit(perp);
-
-    const A2 = add(A, mul(u,  BOND.shrink));
-    const B2 = add(B, mul(u, -BOND.shrink));
-
-    const addCyl = (off, r) => {
-      const s = add(A2, mul(perp, off));
-      const e = add(B2, mul(perp, off));
-      viewer.addCylinder({ start:s, end:e, radius:r, color:BOND.color });
+  <script>
+    // ====== עיצוב/כיול כללי ======
+    // חשוב: אתה ביקשת "לא לנפח אטומים" – אז כאן האטומים בגודל סביר,
+    // והגדלת התצוגה נעשית בעיקר ע"י zoom(2) בתוך המסגרת.
+    const COLORS = {
+      H: 0xFFFFFF,
+      C: 0x909090,
+      O: 0xD32F2F,
+      N: 0x3F51B5,
+      F: 0x2ECC71,
+      B: 0x2ECC71
     };
 
-    if (order === 2) {
-      addCyl( BOND.multiOffset, BOND.multiRadius);
-      addCyl(-BOND.multiOffset, BOND.multiRadius);
-    } else if (order === 3) {
-      addCyl(0, BOND.singleRadius*0.95);
-      addCyl( BOND.multiOffset*1.05, BOND.multiRadius);
-      addCyl(-BOND.multiOffset*1.05, BOND.multiRadius);
-    } else {
-      addCyl(0, BOND.singleRadius);
-    }
-  }
+    // רדיוסים "ויזואליים" מאוזנים (לא ענק), כדי שהקשרים יהיו ברורים
+    const RAD = { H: 0.30, C: 0.42, O: 0.44, N: 0.44, F: 0.42, B: 0.44 };
+    const BOND_RADIUS = 0.12; // קשר עבה וברור
+    const DOUBLE_OFFSET = 0.18; // מרחק בין שני קווי קשר כפול (מעל/מתחת במסך)
+    const TRIPLE_OFFSET = 0.22;
 
-  function applyAtomSpheresOnly(viewer) {
-    // בסיס + יחס בין יסודות (צבעים מגיעים מ-rasmol)
-    viewer.setStyle({}, { sphere: { scale: 0.40 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"H" }, { sphere:{ scale: 0.28 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"C" }, { sphere:{ scale: 0.42 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"N" }, { sphere:{ scale: 0.42 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"O" }, { sphere:{ scale: 0.46 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"F" }, { sphere:{ scale: 0.42 * ATOM_SCALE } });
-    viewer.setStyle({ elem:"B" }, { sphere:{ scale: 0.42 * ATOM_SCALE } });
-  }
-
-  function enforce3DGeometry(key, atoms) {
-    const byElem = (e) => atoms.filter(a => a.elem === e);
-
-    if (key === "methane") {
-      const C = byElem("C")[0];
-      const Hs = byElem("H");
-      if (!C || Hs.length < 4) return;
-
-      const t = 1.05;
-      const pts = [
-        {x: 1, y: 1, z: 1},
-        {x: 1, y:-1, z:-1},
-        {x:-1, y: 1, z:-1},
-        {x:-1, y:-1, z: 1},
-      ].map(p => mul(unit(p), t));
-
-      for (let i=0;i<4;i++){
-        Hs[i].x = C.x + pts[i].x;
-        Hs[i].y = C.y + pts[i].y;
-        Hs[i].z = C.z + pts[i].z;
+    function ensureOverlay(el, text) {
+      let o = el.querySelector(".mol-overlay");
+      if (!o) {
+        o = document.createElement("div");
+        o.className = "mol-overlay";
+        el.appendChild(o);
       }
+      o.textContent = text || "";
+      return o;
     }
 
-    if (key === "ammonia") {
-      const N = byElem("N")[0];
-      const Hs = byElem("H");
-      if (!N || Hs.length < 3) return;
+    // ====== מתמטיקה קטנה ======
+    const vsub = (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
+    const vadd = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+    const vmul = (a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s});
+    const vdot = (a,b)=>a.x*b.x+a.y*b.y+a.z*b.z;
+    const vnorm = (v)=>Math.sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+    const vunit = (v)=>{ const n=vnorm(v)||1; return {x:v.x/n,y:v.y/n,z:v.z/n}; };
 
-      N.z = N.z + 0.25;
-      const r = 1.05;
-      const baseZ = N.z - 0.60;
+    // ====== ציור ======
+    function drawSphere(viewer, atom) {
+      viewer.addSphere({
+        center: { x: atom.x, y: atom.y, z: atom.z },
+        radius: RAD[atom.elem] ?? 0.42,
+        color: COLORS[atom.elem] ?? 0xAAAAAA,
+        quality: 32
+      });
+    }
 
-      const pts = [
-        {x:r, y:0, z:baseZ},
-        {x:r*Math.cos(2*Math.PI/3), y:r*Math.sin(2*Math.PI/3), z:baseZ},
-        {x:r*Math.cos(4*Math.PI/3), y:r*Math.sin(4*Math.PI/3), z:baseZ},
+    // כאן אנחנו מבטיחים ש"קשר כפול" יהיה שני קווים אחד מעל השני "במסך"
+    // ע"י offset לאורך ציר Y של העולם (ובהתחלה אנחנו מיישרים את המולקולות כך שזה באמת "למעלה/למטה").
+    function drawBond(viewer, a, b, order=1) {
+      const A = {x:a.x,y:a.y,z:a.z};
+      const B = {x:b.x,y:b.y,z:b.z};
+
+      const axis = vunit(vsub(B,A));
+
+      // וקטור "למעלה" קבוע במסך (בעולם): Y.
+      // אם bond כמעט מקביל ל-Y, נזוז ב-Z כדי למנוע אפס.
+      let up = {x:0,y:1,z:0};
+      if (Math.abs(vdot(axis, up)) > 0.92) up = {x:0,y:0,z:1};
+
+      // מייצר offset נקי שמאונך לכיוון הקשר
+      const proj = vmul(axis, vdot(axis, up));
+      const perp = vunit(vsub(up, proj));
+
+      const cyl = (start, end) => viewer.addCylinder({
+        start, end,
+        radius: BOND_RADIUS,
+        color: 0x222222
+      });
+
+      if (order === 1) {
+        cyl(A,B);
+        return;
+      }
+
+      if (order === 2) {
+        const o = vmul(perp, DOUBLE_OFFSET);
+        cyl(vadd(A,o), vadd(B,o));
+        cyl(vsub(A,o), vsub(B,o));
+        return;
+      }
+
+      if (order === 3) {
+        cyl(A,B);
+        const o = vmul(perp, TRIPLE_OFFSET);
+        cyl(vadd(A,o), vadd(B,o));
+        cyl(vsub(A,o), vsub(B,o));
+        return;
+      }
+
+      cyl(A,B);
+    }
+
+    function renderMolecule(elId, { atoms, bonds, overlay }) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+
+      ensureOverlay(el, "טוען…");
+
+      const viewer = $3Dmol.createViewer(el, {
+        backgroundColor: "white",
+        defaultcolors: $3Dmol.rasmolColors
+      });
+
+      // ציור אטומים וקשרים
+      // קודם קשרים ואז אטומים -> האטומים "מכסים" יפה את חיבורי הקשר
+      for (const b of bonds) {
+        const a1 = atoms[b.a], a2 = atoms[b.b];
+        if (a1 && a2) drawBond(viewer, a1, a2, b.order ?? 1);
+      }
+      for (const a of atoms) drawSphere(viewer, a);
+
+      ensureOverlay(el, overlay);
+
+      viewer.zoomTo();
+      viewer.zoom(2.0);     // ✅ "פי 2" גודל בתוך המסגרת
+      viewer.render();
+
+      attachControls(el, viewer, { spinAxis: "y", spinSpeed: 0.45 });
+    }
+
+    function attachControls(el, viewer, { spinAxis="y", spinSpeed=0.45 } = {}) {
+      viewer.spin(spinAxis, spinSpeed);
+
+      // זום עדין (לא קופץ)
+      el.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const dy = Math.max(-120, Math.min(120, e.deltaY));
+        const strength = Math.abs(dy) / 120; // 0..1
+        const step = 1 + (0.05 * strength);  // עד 5% לכל "קליק"
+        const zoomFactor = dy > 0 ? step : (1 / step);
+        viewer.zoom(zoomFactor);
+        viewer.render();
+      }, { passive: false });
+
+      // עצירת spin בזמן גרירה
+      const stopSpin = () => viewer.spin(false);
+      el.addEventListener("mousedown", stopSpin);
+      el.addEventListener("touchstart", stopSpin, { passive: true });
+
+      // resize יציב
+      const ro = new ResizeObserver(() => {
+        viewer.resize();
+        viewer.render();
+      });
+      ro.observe(el);
+    }
+
+    // ====== בניית מולקולות (גיאומטריה אמיתית, לא "אטום בודד") ======
+    // הערה: אנחנו לא תלויים ב-PDB כדי שלא "ייפול" קשרים/מבנה.
+    function buildH2O() {
+      // Bent ~104.5°, נבנה סביב O במרכז
+      const O  = { elem:"O", x:0, y:0, z:0 };
+      const r = 1.00; // מרחק O-H (רק לציור)
+      const theta = 104.5 * Math.PI/180;
+      const H1 = { elem:"H", x: r*Math.cos(theta/2), y: r*Math.sin(theta/2), z: 0 };
+      const H2 = { elem:"H", x: r*Math.cos(theta/2), y:-r*Math.sin(theta/2), z: 0 };
+      const atoms = [O,H1,H2];
+      const bonds = [
+        {a:0,b:1,order:1},
+        {a:0,b:2,order:1},
       ];
-
-      for (let i=0;i<3;i++){
-        Hs[i].x = N.x + pts[i].x;
-        Hs[i].y = N.y + pts[i].y;
-        Hs[i].z = pts[i].z;
-      }
-    }
-  }
-
-  function buildBondOrders(key, atoms, pairs) {
-    const bySerial = new Map(atoms.map(a => [a.serial, a]));
-    const out = [];
-
-    for (const [aS,bS] of pairs) {
-      const A = bySerial.get(aS);
-      const B = bySerial.get(bS);
-      if (!A || !B) continue;
-
-      let order = 1;
-
-      if (key === "co2") {
-        if ((A.elem==="C" && B.elem==="O") || (A.elem==="O" && B.elem==="C")) order = 2;
-      }
-      if (key === "hcn") {
-        if ((A.elem==="C" && B.elem==="N") || (A.elem==="N" && B.elem==="C")) order = 3;
-      }
-      out.push({ aS, bS, order });
-    }
-    return out;
-  }
-
-  async function initCanvas({ elId, pdbFile, key, overlayText }) {
-    const el = document.getElementById(elId);
-    if (!el) return;
-
-    ensureOverlay(el, "טוען…");
-    const pdb = await loadText("./" + pdbFile);
-
-    const viewer = $3Dmol.createViewer(el, { backgroundColor:"white", defaultcolors:$3Dmol.rasmolColors });
-    const model = viewer.addModel(pdb, "pdb");
-
-    applyAtomSpheresOnly(viewer);
-
-    const atoms = model.selectedAtoms({});
-    enforce3DGeometry(key, atoms);
-
-    let pairs = parsePDBCONECT(pdb);
-    if (!pairs.length) pairs = inferBondsByDistance(atoms);
-
-    const ordered = buildBondOrders(key, atoms, pairs);
-
-    const bySerial = new Map(atoms.map(a => [a.serial, a]));
-    for (const b of ordered) {
-      const A = bySerial.get(b.aS);
-      const B = bySerial.get(b.bS);
-      if (!A || !B) continue;
-      drawBondCylinders(viewer, A, B, b.order);
+      return { atoms, bonds, overlay:"צורה: זוויתית (Bent) • ∠H–O–H≈104.5°" };
     }
 
-    ensureOverlay(el, overlayText);
+    function buildCO2() {
+      // O=C=O קווי לאורך X, כדי שהקשר הכפול "מעל/מתחת" ייצא נכון במסך
+      const d = 1.25;
+      const O1 = { elem:"O", x:-d, y:0, z:0 };
+      const C  = { elem:"C", x: 0, y:0, z:0 };
+      const O2 = { elem:"O", x: d, y:0, z:0 };
+      const atoms = [O1,C,O2];
+      const bonds = [
+        {a:0,b:1,order:2},
+        {a:1,b:2,order:2},
+      ];
+      return { atoms, bonds, overlay:"צורה: קווית (Linear) • O=C=O (שני קשרים כפולים)" };
+    }
 
-    viewer.zoomTo();
-    viewer.render();
+    function buildHCN() {
+      // H–C≡N קווי
+      const H = { elem:"H", x:-1.55, y:0, z:0 };
+      const C = { elem:"C", x: 0.00, y:0, z:0 };
+      const N = { elem:"N", x: 1.35, y:0, z:0 };
+      const atoms = [H,C,N];
+      const bonds = [
+        {a:0,b:1,order:1},
+        {a:1,b:2,order:3},
+      ];
+      return { atoms, bonds, overlay:"צורה: קווית (Linear) • קשר משולש C≡N" };
+    }
 
-    // ממלא ~80% מהתבנית (כולל קשרים)
-    viewer.zoom(FILL_ZOOM);
-    viewer.render();
+    function buildBF3() {
+      // Trigonal planar: 120° במישור XY
+      const B = { elem:"B", x:0,y:0,z:0 };
+      const r = 1.25;
+      const F1 = { elem:"F", x:r, y:0, z:0 };
+      const F2 = { elem:"F", x:r*Math.cos(2*Math.PI/3), y:r*Math.sin(2*Math.PI/3), z:0 };
+      const F3 = { elem:"F", x:r*Math.cos(4*Math.PI/3), y:r*Math.sin(4*Math.PI/3), z:0 };
+      const atoms=[B,F1,F2,F3];
+      const bonds=[
+        {a:0,b:1,order:1},
+        {a:0,b:2,order:1},
+        {a:0,b:3,order:1},
+      ];
+      return { atoms, bonds, overlay:"צורה: משולש מישורי (Trigonal planar) • 120°" };
+    }
 
-    attachControls(el, viewer, { spinAxis:"y", spinSpeed:0.45 });
-  }
+    function buildCH4() {
+      // Tetrahedral אמיתי (תלת מימד): וקטורים (±1,±1,±1)
+      const C = { elem:"C", x:0,y:0,z:0 };
+      const a = 0.95;
+      const dirs = [
+        {x: 1,y: 1,z: 1},
+        {x: 1,y:-1,z:-1},
+        {x:-1,y: 1,z:-1},
+        {x:-1,y:-1,z: 1},
+      ].map(v => vunit(v));
 
-  window.addEventListener("DOMContentLoaded", () => {
-    initCanvas({ elId:"canvas_water",   pdbFile:"water.pdb",   key:"water",   overlayText:"צורה: זוויתית (Bent)" }).catch(console.error);
-    initCanvas({ elId:"canvas_methane", pdbFile:"methane.pdb", key:"methane", overlayText:"צורה: טטראדרית (Tetrahedral)" }).catch(console.error);
-    initCanvas({ elId:"canvas_ammonia", pdbFile:"ammonia.pdb", key:"ammonia", overlayText:"צורה: פירמידה משולשת (Trigonal pyramidal)" }).catch(console.error);
-    initCanvas({ elId:"canvas_co2",     pdbFile:"co2.pdb",     key:"co2",     overlayText:"צורה: קווית (Linear) • O=C=O (קשרים כפולים)" }).catch(console.error);
-    initCanvas({ elId:"canvas_hcn",     pdbFile:"hcn.pdb",     key:"hcn",     overlayText:"צורה: קווית (Linear) • קשר משולש C≡N" }).catch(console.error);
-    initCanvas({ elId:"canvas_bf3",     pdbFile:"bf3.pdb",     key:"bf3",     overlayText:"צורה: משולש מישורי (Trigonal planar)" }).catch(console.error);
-  });
-</script>
+      const Hs = dirs.map(d => ({ elem:"H", x:a*d.x, y:a*d.y, z:a*d.z }));
+      const atoms = [C, ...Hs];
+      const bonds = [
+        {a:0,b:1,order:1},
+        {a:0,b:2,order:1},
+        {a:0,b:3,order:1},
+        {a:0,b:4,order:1},
+      ];
+      return { atoms, bonds, overlay:"צורה: טטראדרית (Tetrahedral) • ∠≈109.5°" };
+    }
+
+    function buildNH3() {
+      // Trigonal pyramidal: 3 H בבסיס + N מעליהם (z>0)
+      const N = { elem:"N", x:0,y:0,z:0.35 };
+      const r = 1.05;
+      const H1 = { elem:"H", x:r, y:0, z:-0.15 };
+      const H2 = { elem:"H", x:r*Math.cos(2*Math.PI/3), y:r*Math.sin(2*Math.PI/3), z:-0.15 };
+      const H3 = { elem:"H", x:r*Math.cos(4*Math.PI/3), y:r*Math.sin(4*Math.PI/3), z:-0.15 };
+
+      const atoms=[N,H1,H2,H3];
+      const bonds=[
+        {a:0,b:1,order:1},
+        {a:0,b:2,order:1},
+        {a:0,b:3,order:1},
+      ];
+      return { atoms, bonds, overlay:"צורה: פירמידה משולשת (Trigonal pyramidal) • ∠≈107°" };
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderMolecule("canvas_water",   buildH2O());
+      renderMolecule("canvas_methane", buildCH4());
+      renderMolecule("canvas_ammonia", buildNH3());
+      renderMolecule("canvas_co2",     buildCO2());
+      renderMolecule("canvas_hcn",     buildHCN());
+      renderMolecule("canvas_bf3",     buildBF3());
+    });
+  </script>
 </body>
 </html>
